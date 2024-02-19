@@ -377,35 +377,6 @@ CJsonSimMesh::LoadSimMesh() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void
 CJsonSimMesh::Load_CtStdLink(StTag* pTagParent) {
     if (meshType != SIM_MESH_SOURCE) return;
