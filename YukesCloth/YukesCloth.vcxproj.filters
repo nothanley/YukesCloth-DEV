@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Cloth">
+      <UniqueIdentifier>{23a34dc8-4495-4d08-bee1-da439a88823d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Container">
+      <UniqueIdentifier>{7062bb07-9b15-4e7d-9cad-c06b6a08ae48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Encoder">
+      <UniqueIdentifier>{6e87240c-928d-41e0-b0ee-3519ff0f73e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cloth\Types">
+      <UniqueIdentifier>{8fd5a551-8550-453f-a0cd-a8f59f43d3dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Encoder\Import">
+      <UniqueIdentifier>{3995e0b5-d8e5-4e77-8f52-c8cefe41b938}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\BinaryIO.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\SimMesh.cpp">
+      <Filter>Cloth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\SimObj.cpp">
+      <Filter>Cloth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\ClothStructs.cpp">
+      <Filter>Cloth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Container\ClothContainer.cpp">
+      <Filter>Container</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\ClothSave.cpp">
+      <Filter>Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\ClothEncoder.cpp">
+      <Filter>Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\Mesh\SimSubObj_RCN.cpp">
+      <Filter>Cloth\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\Import\SimMeshJson.cpp">
+      <Filter>Encoder\Import</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\BinaryIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\SimMesh.h">
+      <Filter>Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\SimObj.h">
+      <Filter>Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\ClothStructs.h">
+      <Filter>Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Container\ClothContainer.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\ClothEncoder.h">
+      <Filter>Encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\ClothSave.h">
+      <Filter>Encoder</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\Mesh\SimSubObj_RCN.h">
+      <Filter>Cloth\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\Import\SimMeshJson.h">
+      <Filter>Encoder\Import</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="YukesCloth" />
+  </ItemGroup>
+</Project>

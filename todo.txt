@@ -1,0 +1,58 @@
+- colvtx
+	these might be edges? includes two floats. Not sure.
+	index table
+- rcn buffer
+	unknown
+- simlinktar
+	has index table then skin weights	
+	
+completed ():
+	skin
+	subobj_vertex
+	skincalc
+	constraints
+	skinpaste
+	oldvtxsave
+	simlinksrc
+	force
+
+json_implemented():
+	skin
+	subobj_vertex: todo - normals
+	skincalc
+	constraints
+	skinpaste
+	oldvtxsave
+	simlinksrc
+	force
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- skinpaste
+	/* Topmost (simless) vertices. index table */
+	/* Seems to be vertices that will be unaffected by the sim */
+	build an index table, add to json
+- oldvtxsave
+	/* For M_ meshes, every vert is saved. But on sim meshes, only the simless verts
+	   are saved.	*/
+	build an index table, add to json

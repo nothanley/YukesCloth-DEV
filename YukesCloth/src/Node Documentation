@@ -1,0 +1,64 @@
+* -SimMesh:
+	Creates a sim mesh entry item.Defines name, total sim vertices, sim iterations, CalculateNormal flag, and DisplayObject flag
+
+* -SimMesh_AssignSubObj :
+	Defines title of source sim mesh and source model file.
+
+* -SimMesh_AssignSubObjVtx :
+	Defines index value of sub object vertices.
+
+* -SimMesh_AssignSimVtx :
+	Defines index value of sim mesh vertices.
+
+* -SimMeshRCN :
+	Defines vertex normals to be recalculated by the cloth simulation.
+
+* -SimMesh_RCNSubObj :
+	Defines specified recalc normals and table
+
+* -SimMesh_SimMesh_Skin :
+	Defines mesh vertex weights / simulation influence.
+
+* -SimMesh_SimLinkSrc :
+	Defines specified index point values as source simulation points - these are then linked with another sim mesh or sim line target.
+
+* -SimMesh_Pattern :
+	Defines simulation properties and attributes.
+
+* -SimMesh_Stacks :
+	Defines simulation property stack.
+
+* -SimMesh_SkinCalc :
+	Defines simulation calculation index values.
+
+* -SimMesh_SkinPaste :
+	Pastes skinweights to skin data at specified index.
+
+* -SimMesh_OldVtxSave :
+	Defines old index values to be saved.
+
+* -SimMesh_Force :
+	Defines gravity force ? influence on index vertex values
+
+* -SimMesh_CtStretchLink :
+	Defines max ? stretch constraint between two vertex points
+
+* -SimMesh_CtStdLink :
+	Defines link influence between two vertex points
+
+* -SimMesh_CtBendLink :
+	Defines max ? bend constraint between two vertex points
+
+* -SimMesh_BendingStiffness :
+	Defines stiffness of bending weight on specified triangles
+
+* -SimMesh_ColVtx :
+	Defines unknown float value to vertex indices.Title implies collision handling.
+
+* -SimMesh_CtFixation :
+	Defines unknown float value to vertex indicese.Title implies fixation.
+
+
+
+
+
