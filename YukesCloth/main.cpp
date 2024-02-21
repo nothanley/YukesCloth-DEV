@@ -13,5 +13,5 @@ int main()
         //"C:\\Users\\wauke\\Desktop\\out_file.ycl", 
         //_yclContainer.m_pClothSimObj);
 
-    //CJsonSimMesh jsonMesh("C:\\Users\\wauke\\Desktop\\new_weights.json");
+    CJsonSimMesh jsonMesh("C:\\Users\\wauke\\Desktop\\plane_source.jsim");
 }

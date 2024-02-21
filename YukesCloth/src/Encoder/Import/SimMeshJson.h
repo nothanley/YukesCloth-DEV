@@ -10,8 +10,8 @@ class StTag;
 
 enum {
 	SIM_MESH_SOURCE,
+	SIM_MESH_TARGET,
 	SIM_LINE,
-	SIM_MESH_TARGET
 };
 
 class CJsonSimMesh
@@ -27,6 +27,7 @@ public:
 private:
 	void ReadJson(nlohmann::json& json, const char* filePath);
 	void LoadSimMesh();
+	void ValidateJsonType();
 
 private:
 	StTag* BuildNewTag(const uint32_t& type, const char* name);
@@ -37,6 +38,7 @@ private:
 	void Load_SkinVerts(StSimMesh* pSimMesh);
 	void Load_SkinWeights(StSimMesh* pSimMesh, uint32_t& maxBlendWeights);
 	void Load_SimLinkSrc(StTag* pTagParent);
+	void Load_SimLinkTar(StTag* pTagParent);
 	void Load_Pattern(StTag* pTagParent);
 	void Load_Stacks(StTag* pTagParent);
 	void Load_RCN(StTag* pTagParent);

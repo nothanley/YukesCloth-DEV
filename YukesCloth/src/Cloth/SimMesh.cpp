@@ -505,6 +505,10 @@ CSimMeshData::GetLinkTar(StSimMesh& sLine, CSimObj* pSimObj)
 	pSimObj->m_pDataStream->seekg(pSimObj->m_iStreamPos + 0x8C);
 
 	StSimMesh* pSourceMesh = GetMeshSourceObj(meshTarget.source, pSimObj);
+	if (!pSourceMesh) {
+		throw("\nCould not locate source mesh for target: %s", sLine.sObjName);
+	}
+
 	uint32_t numIdxs = _U32;
 	uint32_t paletteSize = _U32;
 	meshTarget.totalWeights = _U32;
@@ -531,7 +535,7 @@ CSimMeshData::GetLinkTar(StSimMesh& sLine, CSimObj* pSimObj)
 	/* Iterate and define the influence of the source triangle on the specified vertex */
 	for (uint32_t i = 0; i < paletteSize; i++) {
 		MeshWeight blendWeight;
-		for (int i = 0; i < meshTarget.totalWeights; i++) {
+		for (int j = 0; j < meshTarget.totalWeights; j++) {
 			blendWeight.numWeights = _U16;
 			int srcIndex = _U16;
 			float influence = _FLOAT;

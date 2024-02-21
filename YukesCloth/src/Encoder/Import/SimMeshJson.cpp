@@ -23,6 +23,20 @@ CJsonSimMesh::ReadJson(JSON& json, const char* filePath) {
     std::ifstream i(filePath);
     i >> json;
     i.close();
+
+    this->ValidateJsonType();
+}
+
+void
+CJsonSimMesh::ValidateJsonType() {
+
+    try {
+        float jsonFormat = m_Json["General"]["JSIM Version"];
+    }
+    catch (...) {
+        throw("Invalid json sim container.");
+    }
+
 }
 
 StTag* 
@@ -165,8 +179,8 @@ CJsonSimMesh::Load_SkinWeights(StSimMesh* sMesh, uint32_t& maxBlendWeights) {
         for (auto& item : palette)
         {
             SimNode node{ static_cast<uint32_t>(-1) , item };
-            if (!hasSimNode(node, sMesh->nodePalette))
-                sMesh->nodePalette.push_back(node);
+            if (!hasSimNode(node, sMesh->skin.nodePalette))
+                sMesh->skin.nodePalette.push_back(node);
 
             blendWeight.bones.push_back(item);
             blendWeight.weights.push_back(vertexSkin[item]);
@@ -202,6 +216,49 @@ CJsonSimMesh::Load_SimLinkSrc(StTag* pTagParent) {
         sMesh->sourceEdges.push_back(mTriangle);
     }
 
+    pTagParent->children.push_back(pTag);
+}
+
+void
+CJsonSimMesh::Load_SimLinkTar(StTag* pTagParent) {
+    StTag* pTag = BuildNewTag(enTagType_SimMesh_SimLinkTar);
+    StSimMesh* sMesh = pTagParent->pSimMesh;
+    pTag->pSimMesh = sMesh;
+    LinkTarget meshTarget;
+
+    auto sJsonTarget = m_Json["Mesh"]["SimLink-Target"];
+    meshTarget.source = sJsonTarget["Source"];
+    uint32_t numFaces = sJsonTarget["Source Faces"];
+    meshTarget.totalWeights = 4;
+
+    /* Create face index buffer */
+    for (uint32_t i = 0; i < numFaces; i++) {
+        meshTarget.indices.push_back(i);
+    }
+
+    /* Create vtx index palette */
+    for (uint32_t i = 0; i < sMesh->sSimVtxCount; i++) {
+        meshTarget.palette.push_back(i);
+    }
+
+    /* Define source face vertex influence */
+    for (uint32_t i = 0; i < sMesh->sSimVtxCount; i++) {
+        MeshWeight blendWeight;
+        auto vtxSourceBlend = sJsonTarget[std::to_string(i)];
+
+        for (int j = 0; j < meshTarget.totalWeights; j++) {
+            blendWeight.numWeights = 4;
+            int faceIndex = vtxSourceBlend[j][0];
+            float influence = vtxSourceBlend[j][1];
+
+            blendWeight.indices.push_back(faceIndex);
+            blendWeight.weights.push_back(influence);
+        }
+
+        meshTarget.weights.push_back(blendWeight);
+    }
+
+    sMesh->target = meshTarget;
     pTagParent->children.push_back(pTag);
 }
 
@@ -324,12 +381,15 @@ CJsonSimMesh::Load_Stacks(StTag* pTagParent) {
     Load_SkinPaste(pTag);
     Load_OldVtxSave(pTag);
 
-    if (meshType == SIM_MESH_SOURCE)
-    {
+    if (meshType == SIM_MESH_SOURCE) {
         Load_Force(pTag);
     }
 
     Load_Constraints(pTag);
+
+    if (meshType == SIM_MESH_TARGET) {
+        Load_SimLinkTar(pTag);
+    }
 
     pTagParent->children.push_back(pTag);
 }
@@ -357,6 +417,7 @@ CJsonSimMesh::LoadSimMesh() {
     m_pSMesh->sObjName = m_Json["Model"]["SubObj Name"];
     m_pSMesh->sSimVtxCount = m_Json["Model"]["Sim Verts"];
     m_pTagHead->pSimMesh = m_pSMesh;
+    this->meshType = m_Json["Model"]["Mesh Type"];
 
     /* Get all child nodes and mesh data */
     Load_AssignSubObj(m_pTagHead);
@@ -374,35 +435,6 @@ CJsonSimMesh::LoadSimMesh() {
 
     printf("\n\nJson mesh conversion success!\n\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -28,6 +28,8 @@ public:
 
 public:
     void OpenYukesClothFile(const QString& filePath);
+    void ClearAllData();
+    void ValidateLinks();
 
 private slots:
     void on_OpenFile_clicked();
@@ -45,14 +47,15 @@ private slots:
     void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
     void on_actionExpand_Collapse_All_triggered();
     void ClearSelectionWindow();
-    void AddNodeToTreeTag(StTag* newTag);
     void on_actionExportItemAsJson_triggered();
     void on_actionImport_Custom_Constraints_triggered();
     void on_actionSave_triggered();
-
     void on_expandButton_clicked();
-
     void on_CreateButton_clicked();
+    int GetTagIndex_SimMesh(StTag* newTag);
+    bool AddNodeToTreeTag(StTag* newTag);
+
+    void on_actionClear_File_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -61,6 +64,8 @@ private:
     void PopulateTreeWidget(StTag* pRootNode);
     void PopulateTableWidget(StTag* pNode, QTableWidget *pTable);
     void AddContextMenuNodeSettings(QMenu &menu);
+    void ReloadTempFile();
+    void OpenAppDataYCLFile(const QString& filePath);
 
 private:
     QString m_sYclFilePath;

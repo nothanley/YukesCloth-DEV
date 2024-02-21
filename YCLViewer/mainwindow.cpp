@@ -134,6 +134,21 @@ MainWindow::OpenYukesClothFile(const QString& filePath){
     UpdateStatLabels();
 }
 
+void
+MainWindow::OpenAppDataYCLFile(const QString& filePath){
+    CClothContainer* yclObj;
+    try{
+        yclObj = new CClothContainer(filePath.toStdString().c_str());}
+    catch(...){
+        m_pYclFile = nullptr;
+        return;
+    }
+
+    this->m_pYclFile = yclObj;
+    StTag* pRootNode = m_pYclFile->m_pClothSimObj->m_pStHead;
+    PopulateTreeWidget(pRootNode);
+    UpdateStatLabels();
+}
 
 void
 MainWindow::on_actionOpen_ycl_file_triggered()
@@ -271,7 +286,8 @@ void DisplayMeshTableData(StSimMesh* pSimMesh, QTableWidget* pTable){
     QStringList meshHeaders = GetTableHeaderLabels(pTable) + QStringList{
                               "Mesh Name","Mesh Vertex Count",
                               "Sim Vertex Count","Constraints",
-                              "Is Sim Line", "Nodes"    };
+                              "Is Sim Line", "Nodes", "Display Object",
+                              "Calc Normals", "Iterations"    };
 
     AppendTableItem(pTable, QString::fromStdString(pSimMesh->sObjName));
     AppendTableItem(pTable, pSimMesh->sObjVerts.size());
@@ -279,6 +295,9 @@ void DisplayMeshTableData(StSimMesh* pSimMesh, QTableWidget* pTable){
     AppendTableItem(pTable, pSimMesh->constraints.size());
     AppendTableItem(pTable, pSimMesh->bIsSimLine);
     AppendTableItem(pTable, pSimMesh->nodePalette.size());
+    AppendTableItem(pTable, pSimMesh->bDispObject);
+    AppendTableItem(pTable, pSimMesh->bCalcNormal);
+    AppendTableItem(pTable, pSimMesh->sIterationCount);
     pTable->setVerticalHeaderLabels(meshHeaders );
 }
 
@@ -387,7 +406,7 @@ MainWindow::on_SaveButton_clicked()
         savePath += ".ycl";
 
     CClothSave::SaveToDisk(savePath.toStdString().c_str(), m_pYclFile->m_pClothSimObj);
-    QMessageBox::warning(this,"Save Complete", "File saved to: " + savePath);
+    QMessageBox::information(this,"Save Complete", "File saved to: " + savePath);
 }
 
 
@@ -401,7 +420,6 @@ void
 MainWindow::ClearSelectionWindow()
 {
     this->m_pSelectionWindow = nullptr;
-    qDebug() << "Window Closed!";
 }
 
 void AddStringToVector(std::vector<std::string>& vec,
@@ -427,14 +445,60 @@ FindNodeIndex(const SimNode& sTarget, std::vector<SimNode> nodeTable)
     return -1;
 }
 
-void
+int
+MainWindow::GetTagIndex_SimMesh(StTag* pTag){
+    StSimMesh* pDestMesh = pTag->pSimMesh;
+    StTag* sceneRoot = m_pYclFile->m_pClothSimObj->m_pStHead;
+
+    for (int i = 0; i < sceneRoot->children.size(); i++)
+    {
+        StTag* branch = sceneRoot->children.at(i);
+
+        /* Check if mesh name is equal to target */
+        if(branch->pSimMesh)
+        {
+            std::string branchMeshName = branch->pSimMesh->sObjName;
+            if (branchMeshName == pDestMesh->sObjName)
+                return i;
+        }
+
+    }
+    return -1;
+}
+
+bool
+isMissingSourceMesh(StSimMesh* pSimMesh, StTag* pTagHead){
+    for (auto& item : pTagHead->children)
+    {
+        StSimMesh* pTreeMesh = item->pSimMesh;
+        if (pTreeMesh){
+            if (pTreeMesh->sObjName == pSimMesh->target.source)
+                return false;
+            if (pTreeMesh->sObjName == pSimMesh->sObjName)
+                return true;
+        }
+    }
+    return true;
+}
+
+bool
 MainWindow::AddNodeToTreeTag(StTag* newTag){
     CSimObj* pSimObj = m_pYclFile->m_pClothSimObj;
-    if (!newTag->pSimMesh) return;
+    if (!newTag->pSimMesh) return false;
+
+    /* Verify target mesh isn't already pre-existing */
+    StSimMesh* pSimMesh = newTag->pSimMesh;
+    QString meshName = QString::fromStdString(pSimMesh->sObjName);
+    int meshIndex = GetTagIndex_SimMesh(newTag);
+
+    if (meshIndex != -1)
+    {
+        QMessageBox::warning(this,"Merge Error","Mesh Item: \"" + meshName
+                             + "\" already exists in tree. Please remove original entry first." );
+        return false;
+    }
 
     /* Append to node palette if doesn't exists */
-    StSimMesh* pSimMesh = newTag->pSimMesh;
-
     for (auto& node : pSimMesh->skin.nodePalette)
     {
         int nodeIdx = FindNodeIndex(node,pSimObj->m_NodeTable);
@@ -453,6 +517,7 @@ MainWindow::AddNodeToTreeTag(StTag* newTag){
     /* Reload Hierarchy */
     PopulateTreeWidget(m_pYclFile->m_pClothSimObj->m_pStHead);
     UpdateStatLabels();
+    return true;
 }
 
 void
@@ -468,9 +533,18 @@ MainWindow::on_addnodebutton_clicked()
                                                          tr("Yukes ClothSim Container (*.ycl)") );
     if (sourceFile == "") return;
 
-    CClothContainer sourceYCL(sourceFile.toStdString().c_str());
-    this->m_pSelectionWindow = new NodeSelectWindow(sourceYCL.m_pClothSimObj,pUserTag,this);
-    m_pSelectionWindow->show();
+
+    try{
+        CClothContainer sourceYCL(sourceFile.toStdString().c_str());
+        this->m_pSelectionWindow = new NodeSelectWindow( sourceYCL.m_pClothSimObj,pUserTag,
+                                                         this, sourceFile.toStdString().c_str() );
+        m_pSelectionWindow->show();
+    }
+    catch(...){
+        m_pSelectionWindow = nullptr;
+        QMessageBox::warning(this,"Load Error","Input .ycl file is invalid or corrupt.");
+        return;
+    }
 
     /* Connect close signals in this & child dialog */
     QObject::connect(m_pSelectionWindow, &NodeSelectWindow::interfaceClose,
@@ -479,6 +553,10 @@ MainWindow::on_addnodebutton_clicked()
     /*  Connect signals in this & child dialog */
     QObject::connect(m_pSelectionWindow, &NodeSelectWindow::addNodeToItem,
                         this, &MainWindow::AddNodeToTreeTag);
+
+    /*  Connect signals in this & child dialog */
+    QObject::connect(m_pSelectionWindow, &NodeSelectWindow::validateParent,
+                        this, &MainWindow::ValidateLinks);
 }
 
 
@@ -589,7 +667,8 @@ MainWindow::on_actionExpand_Collapse_All_triggered()
 }
 
 
-void MainWindow::on_actionExportItemAsJson_triggered()
+void
+MainWindow::on_actionExportItemAsJson_triggered()
 {
     if (this->m_pSelectionWindow || !m_pYclFile) return;
     QTreeWidgetItem* pTreeItem = ui->treeWidget->currentItem();
@@ -604,10 +683,11 @@ void MainWindow::on_actionExportItemAsJson_triggered()
     ClothJson json(pSourceTag,sourceFile.toStdString().c_str());
     json.save();
 
-    QMessageBox::warning(this,"File Saved", " Node/JSON operation complete.");
+    QMessageBox::information(this,"File Saved", " Node/JSON operation complete.");
 }
 
-void MainWindow::on_actionImport_Custom_Constraints_triggered()
+void
+MainWindow::on_actionImport_Custom_Constraints_triggered()
 {
     if (this->m_pSelectionWindow || !m_pYclFile) return;
     QTreeWidgetItem* pTreeItem = ui->treeWidget->currentItem();
@@ -623,10 +703,11 @@ void MainWindow::on_actionImport_Custom_Constraints_triggered()
     ClothJson json(pSourceTag,sourceFile.toStdString().c_str());
     json.UpdateTag();
 
-    QMessageBox::warning(this,"Modified Data", " JSON import complete.");
+    QMessageBox::information(this,"Modified Data", " JSON import complete.");
 }
 
-void CreateSaveOverwritePrompt(QString path, bool* ok){
+void
+CreateSaveOverwritePrompt(QString path, bool* ok){
     QMessageBox msgBox;
     msgBox.setWindowTitle("Overwrite File");
     msgBox.setText("Are you sure you want to overwrite \"" + path+ "\"?");
@@ -637,7 +718,8 @@ void CreateSaveOverwritePrompt(QString path, bool* ok){
     else { *ok = false; }
 }
 
-void MainWindow::on_actionSave_triggered()
+void
+MainWindow::on_actionSave_triggered()
 {
     bool isSaveReady = false;
     CreateSaveOverwritePrompt(m_sYclFilePath,&isSaveReady);
@@ -647,33 +729,166 @@ void MainWindow::on_actionSave_triggered()
         return;}
 
     CClothSave::SaveToDisk(m_sYclFilePath.toStdString().c_str(), m_pYclFile->m_pClothSimObj);
-    QMessageBox::warning(this,"Save Complete", "File saved to: " + m_sYclFilePath);
-
+    QMessageBox::information(this,"Save Complete", "File saved to: " + m_sYclFilePath);
 }
 
 
 
-void MainWindow::on_expandButton_clicked()
+void
+MainWindow::on_expandButton_clicked()
 {
     on_actionExpand_Collapse_All_triggered();
 }
 
+QStringList
+sortJsimFiles(QStringList files) {
+    // Custom comparison function
+    auto customCompare = [](const QString& file1, const QString& file2) {
+        if (file1.endsWith("_source.jsim") && !file2.endsWith("_source.jsim")) {
+            return false; // file1 comes after file2
+        } else if (!file1.endsWith("_source.jsim") && file2.endsWith("_source.jsim")) {
+            return true; // file1 comes before file2
+        } else {
+            return file1 < file2; // lexicographical comparison
+        }
+    };
 
-void MainWindow::on_CreateButton_clicked()
+    // Sort the files using custom comparison function
+    std::sort(files.begin(), files.end(), customCompare);
+
+    return files;
+}
+
+void
+MainWindow::on_CreateButton_clicked()
 {
     if (this->m_pSelectionWindow || !m_pYclFile) return;
-    QString sourceFile = QFileDialog::getOpenFileName(this, tr("Open .json file"),
+    QStringList sourceFiles = QFileDialog::getOpenFileNames(this, tr("Open .jsim file"),
                                                          this->m_sExplorerPath,
-                                                         tr("JSON (*.json)") );
-    if (sourceFile == "") return;
+                                                         tr("JSIM (*.jsim)") );
+    if (sourceFiles.size() == 0) return;
+    bool importOk = false;
+    QString filePath = m_sYclFilePath;
+    sourceFiles = sortJsimFiles(sourceFiles);
 
+    for (auto& file : sourceFiles){
+        /* Load each jsim container and append to hierarchy */
+        try{
+            CJsonSimMesh jsonMesh(file.toStdString().c_str());
+            StTag* importTag = jsonMesh.GetMeshTag();
+            importOk = MainWindow::AddNodeToTreeTag(importTag);
+        }
+        catch(...){
+            QMessageBox::warning(this,"File Error", "Could not load invalid or corrupt JSIM container.");
+            return;
+        }
+    }
 
-    CJsonSimMesh jsonMesh(sourceFile.toStdString().c_str());
-    StTag* importTag = jsonMesh.GetMeshTag();
+    if (importOk){
+        /* Update file container with appdata cache */
+        try { ReloadTempFile(); }
+        catch (...)
+        {
+            ClearAllData();
+            OpenYukesClothFile(filePath);
+            QMessageBox::warning(this,"File Error", "Could not import mesh. Target .jsim is missing source sim file.");
+            return;
+        }
 
-    MainWindow::AddNodeToTreeTag(importTag);
-    QMessageBox::warning(this,"Modified Data", " Mesh import complete.");
+        QMessageBox::information(this,"File Load", "JSIM mesh import complete");
+    }
 }
+
+void
+MainWindow::ReloadTempFile(){
+    QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+    if (m_pYclFile->m_pClothSimObj->m_pStHead->children.size() == 0)
+        throw("Cannot save empty ycl file.");
+
+    QDir dir(appDataPath);
+    if (!dir.mkpath("."))
+        throw("Failed to write contents.");
+
+    QString tempFile = appDataPath + "/editor_temp.ycl";
+    CClothSave::SaveToDisk(tempFile.toStdString().c_str(), m_pYclFile->m_pClothSimObj);
+    OpenAppDataYCLFile(tempFile);
+
+    if (m_pYclFile == nullptr)
+        throw("Failed to write contents.");
+}
+
+
+void
+MainWindow::ClearAllData(){
+    m_sYclFilePath = "";
+    if (m_pYclFile) delete m_pYclFile;
+    m_pYclFile = nullptr;
+
+    if (m_pSelectionWindow){
+        m_pSelectionWindow->close(); }
+    m_pSelectionWindow = nullptr;
+
+    ui->treeWidget->clear();
+    ui->tableWidget->clear();
+    ui->nodeLabel->setText("0 node(s)");
+    ui->pathLabel->setText( "YCL Editor" );
+    ui->meshTotalLabel->setText("SimMesh Total: 0");
+    ui->lineTotalLabel->setText("SimLine Total: 0");
+    ui->colTotalLabel->setText("Collision Total: 0");
+}
+
+
+void
+MainWindow::on_actionClear_File_triggered()
+{
+    ClearAllData();
+}
+
+bool
+HasSimLinkTarget(StSimMesh* pMesh, StTag* pTag)
+{
+   for (auto& child : pTag->children){
+       StSimMesh* pTreeMesh = child->pSimMesh;
+       if(pTreeMesh)
+       {
+           if (pMesh->target.source == pTreeMesh->sObjName) return true;
+           if (pMesh->sObjName == pTreeMesh->sObjName) return false;
+       }
+   }
+
+   return false;
+}
+
+void
+MainWindow::ValidateLinks()
+{
+   if (!m_pYclFile) return;
+   StTag* pTagHead = m_pYclFile->m_pClothSimObj->m_pStHead;
+
+   for (int i = 0; i < pTagHead->children.size(); i++)
+   {
+        auto child = pTagHead->children.at(i);
+        StSimMesh* mesh = child->pSimMesh;
+
+        if(mesh)
+        {
+            bool isTargetMesh = mesh->target.indices.size() != 0;
+            if (isTargetMesh && !HasSimLinkTarget(mesh, pTagHead)){
+                QString filePath = m_sYclFilePath;
+                ClearAllData();
+                OpenYukesClothFile(filePath);
+                QString log = "Could not load node. Target mesh: \"" + QString::fromStdString(mesh->sObjName)
+                        + "\" is missing sim mesh: \"" + QString::fromStdString(mesh->target.source) + "\"";
+                QMessageBox::warning(this,"File Error",log);
+                return;
+            }
+        }
+   }
+}
+
+
+
 
 
 
