@@ -6,7 +6,7 @@
 int main()
 {
     CClothContainer _yclContainer(
-        "C:\\Users\\wauke\\Desktop\\poop.ycl");
+        "C:\\Users\\wauke\\Desktop\\really-mature-filename.ycl");
 
 
     //CClothSave::SaveToDisk(
