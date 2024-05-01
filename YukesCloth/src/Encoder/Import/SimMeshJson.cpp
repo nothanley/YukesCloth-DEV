@@ -57,7 +57,7 @@ CJsonSimMesh::Load_AssignSubObj(StTag* pTagParent) {
 
     sMesh->sMeshIndex = -1;
     sMesh->sObjIndex = -1;
-    sMesh->sIterationCount = 1;
+    m_pSMesh->sIterationCount = m_Json["Model"]["Iteration Count"];
     sMesh->bCalcNormal = isSourceSimMesh;
     sMesh->bDispObject = isSourceSimMesh;
     Load_AssignSubObjVtx(pTag);
@@ -327,8 +327,10 @@ CJsonSimMesh::Load_Force(StTag* pTagParent) {
     StSimMesh* sMesh = pTagParent->pSimMesh;
     pTag->pSimMesh = sMesh;
 
-    sMesh->force.parameters = std::vector<float>{ 1.0, 0.985, 0.0, 0.05 };
+    float gForceY = m_Json["Model"]["Force Y"];
+    sMesh->force.parameters = std::vector<float>{ gForceY, 0.985, 0.0, 0.05 };
     std::vector<uint32_t> sJsonVerts = m_Json["Mesh"]["Force"];
+
 
     for (auto& index : sJsonVerts) {
         SkinVertex gForceVertex{ index, 1.0 };

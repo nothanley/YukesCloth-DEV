@@ -6,12 +6,12 @@
 int main()
 {
     CClothContainer _yclContainer(
-        "C:\\Users\\wauke\\Desktop\\out_file.ycl");
+        "C:\\Users\\wauke\\Desktop\\poop.ycl");
 
 
     //CClothSave::SaveToDisk(
         //"C:\\Users\\wauke\\Desktop\\out_file.ycl", 
         //_yclContainer.m_pClothSimObj);
 
-    CJsonSimMesh jsonMesh("C:\\Users\\wauke\\Desktop\\plane_source.jsim");
+    //CJsonSimMesh jsonMesh("C:\\Users\\wauke\\Desktop\\plane_source.jsim");
 }

@@ -1291,6 +1291,7 @@ QPushButton:pressed{
     </property>
     <addaction name="actionExpand_Collapse"/>
     <addaction name="actionClear_File"/>
+    <addaction name="actionRemoveTreeItem"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -1361,6 +1362,14 @@ QPushButton:pressed{
   <action name="actionClear_File">
    <property name="text">
     <string>Clear View</string>
+   </property>
+  </action>
+  <action name="actionRemoveTreeItem">
+   <property name="text">
+    <string>Remove Current Tree Item</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
    </property>
   </action>
  </widget>

@@ -157,6 +157,10 @@ struct StSimMesh {
 	ForceField force;
 	LineDef lines;
 	LinkTarget target;
+
+#ifdef DEBUG_EDITOR
+    std::vector<uint32_t> skin_calc_indices;
+#endif
 };
 
 struct StTag {

@@ -54,8 +54,8 @@ private slots:
     void on_CreateButton_clicked();
     int GetTagIndex_SimMesh(StTag* newTag);
     bool AddNodeToTreeTag(StTag* newTag);
-
     void on_actionClear_File_triggered();
+    void on_actionRemoveTreeItem_triggered();
 
 private:
     Ui::MainWindow *ui;

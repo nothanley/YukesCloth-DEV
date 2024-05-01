@@ -89,6 +89,8 @@ ClothJson::CreateConstraintJson(StSimMesh* pSimMesh, SimConstraint* pConstraint)
 void
 ClothJson::CreateJsonVertexTables(StSimMesh* pSimMesh){
 
+#ifdef DEBUG_EDITOR
+
     std::vector<uint32_t> index_table;
     for (int i = 0; i < pSimMesh->skinPaste.size(); i++){
         auto index = pSimMesh->skinPaste[i];
@@ -97,57 +99,59 @@ ClothJson::CreateJsonVertexTables(StSimMesh* pSimMesh){
     }
     m_Json["Mesh"]["SkinPaste"] = index_table;
 
-//    /* Append Skin paste table */
-//    std::vector<uint32_t> index_table;
-//    for (int i = 0; i < pSimMesh->skinPaste.size(); i++){
-//        auto index = pSimMesh->skinPaste[i];
-//        index = UnpackVertexIndex(pSimMesh,index);
-//        index_table.push_back(index);
-//    }
-//    m_Json["Mesh"]["SkinPaste"] = index_table;
+    /* Append vtx save table */
+    std::vector<uint32_t> vtx_table;
+    for (int i = 0; i < pSimMesh->saveVerts.size(); i++){
+        auto index = pSimMesh->saveVerts[i];
+        index = UnpackVertexIndex(pSimMesh,index);
+        vtx_table.push_back(index);
+    }
 
-//    /* Append vtx save table */
-//    std::vector<uint32_t> vtx_table;
-//    for (int i = 0; i < pSimMesh->saveVerts.size(); i++){
-//        auto index = pSimMesh->saveVerts[i];
-//        index = UnpackVertexIndex(pSimMesh,index);
-//        vtx_table.push_back(index);
-//    }
+    m_Json["Mesh"]["SaveVert"] = vtx_table;
 
-//    m_Json["Mesh"]["SaveVert"] = vtx_table;
+    /* Append vtx skin calc table */
+    std::vector<uint32_t> skinc_table;
+    for (int i = 0; i < pSimMesh->skin_calc_indices.size(); i++){
+        auto index = pSimMesh->skin_calc_indices[i];
+        index = UnpackVertexIndex(pSimMesh,index);
+        skinc_table.push_back(index);
+    }
+    m_Json["Mesh"]["SkinCalc"] = skinc_table;
 
-//    /* Append vtx force table */
-//    std::vector<uint32_t> force_table;
-//    for (int i = 0; i < pSimMesh->force.data.size(); i++){
-//        auto vertex = pSimMesh->force.data[i];
-//        uint32_t index = UnpackVertexIndex(pSimMesh,vertex.index);
-//        force_table.push_back(index);
-//    }
-//    m_Json["Mesh"]["Force"] = force_table;
+    /* Append vtx force table */
+    std::vector<uint32_t> force_table;
+    for (int i = 0; i < pSimMesh->force.data.size(); i++){
+        auto vertex = pSimMesh->force.data[i];
+        uint32_t index = UnpackVertexIndex(pSimMesh,vertex.index);
+        force_table.push_back(index);
+    }
+    m_Json["Mesh"]["Force"] = force_table;
 
-//    /* Append vtx save table */
-//    std::vector<uint32_t> src_table;
-//    for (int i = 0; i < pSimMesh->sourceEdges.size(); i++){
-//        auto edge = pSimMesh->sourceEdges[i];
-//        auto pointA = UnpackVertexIndex(pSimMesh,edge.point0);
-//        auto pointB = UnpackVertexIndex(pSimMesh,edge.point1);
-//        auto pointC = UnpackVertexIndex(pSimMesh,edge.point2);
-//        src_table.push_back(pointA);
-//        src_table.push_back(pointB);
-//        src_table.push_back(pointC);
-//    }
-//    m_Json["Mesh"]["SrcLink"] = src_table;
+    /* Append vtx save table */
+    std::vector<uint32_t> src_table;
+    for (int i = 0; i < pSimMesh->sourceEdges.size(); i++){
+        auto edge = pSimMesh->sourceEdges[i];
+        auto pointA = UnpackVertexIndex(pSimMesh,edge.point0);
+        auto pointB = UnpackVertexIndex(pSimMesh,edge.point1);
+        auto pointC = UnpackVertexIndex(pSimMesh,edge.point2);
+        src_table.push_back(pointA);
+        src_table.push_back(pointB);
+        src_table.push_back(pointC);
+    }
+    m_Json["Mesh"]["SrcLink"] = src_table;
 
-//    /* Append vtx save table */
-//    std::vector<uint32_t> col_vtx_table;
-//    for (int i = 0; i < pSimMesh->colVtx.items.size(); i++){
-//        auto edge = pSimMesh->colVtx.items[i];
-//        auto pointA = UnpackVertexIndex(pSimMesh,edge.x.index);
-//        auto pointB = UnpackVertexIndex(pSimMesh,edge.y.index);
-//        col_vtx_table.push_back(pointA);
-//        col_vtx_table.push_back(pointB);
-//    }
-//    m_Json["Mesh"]["ColVerts"] = col_vtx_table;
+    /* Append vtx save table */
+    std::vector<uint32_t> col_vtx_table;
+    for (int i = 0; i < pSimMesh->colVtx.items.size(); i++){
+        auto edge = pSimMesh->colVtx.items[i];
+        auto pointA = UnpackVertexIndex(pSimMesh,edge.x.index);
+        auto pointB = UnpackVertexIndex(pSimMesh,edge.y.index);
+        col_vtx_table.push_back(pointA);
+        col_vtx_table.push_back(pointB);
+    }
+    m_Json["Mesh"]["ColVerts"] = col_vtx_table;
+
+#endif
 }
 
 bool
@@ -268,7 +272,7 @@ ClothJson::UpdateTag(){
         if (hasJsonConstraint && isValidConstraint(meshData.name)){
             SimConstraint data = GetJson_Constraint(pSimMesh, meshData);
             pSimMesh->constraints[i] = data;
-            qDebug() << "Swapped buffer: " << meshData.name.c_str();
+//            qDebug() << "Swapped buffer: " << meshData.name.c_str();
         }
     }
 

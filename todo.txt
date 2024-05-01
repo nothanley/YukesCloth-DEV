@@ -1,10 +1,3 @@
-- colvtx
-	these might be edges? includes two floats. Not sure.
-	index table
-- rcn buffer
-	unknown
-- simlinktar
-	has index table then skin weights	
 	
 completed ():
 	skin
@@ -15,6 +8,9 @@ completed ():
 	oldvtxsave
 	simlinksrc
 	force
+	colvtx
+	rcn
+	simlinktar
 
 json_implemented():
 	skin
@@ -25,28 +21,23 @@ json_implemented():
 	oldvtxsave
 	simlinksrc
 	force
+	colvtx
+	rcn
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+notes:
+- simlinktar
+	has index table then skin weights	
+	
+colvtx buffer-
+	1st buffer is defined as coltable
+	vertex matrices are loaded
+	
+- colvtx
+	seems to be every edge associated with a vertex is listed.
+	these might be edges? includes two floats. Not sure.
+	index table
 
 - skinpaste
 	/* Topmost (simless) vertices. index table */
@@ -56,3 +47,15 @@ json_implemented():
 	/* For M_ meshes, every vert is saved. But on sim meshes, only the simless verts
 	   are saved.	*/
 	build an index table, add to json
+	
+- rcn buffer
+	deals with face normals
+	
+	NOTE: 2/17- The face link buffer might seemingly refer to the index of a quad polygon in the 
+				predefined quad indice stream. Although they don't need to be quads, but the values seem
+				to match. So, aggregate the poly indices and evaluate what the facelink buffer points to
+				
+				- Update:
+					so, it seems that whats really happening is you are going through every vertex
+					and listing out every quad poly that shares a point with this and setting the face 
+					list for the vertex index

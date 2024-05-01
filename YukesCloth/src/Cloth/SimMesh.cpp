@@ -159,6 +159,10 @@ CSimMeshData::GetSkinCalc(StSimMesh& sMesh, const CSimObj* pSimObj) {
 		uint32_t vertIdx = _U32;
         Vector4 skinMatrix = sMesh.skin.matrices.at(vertIdx);
         sMesh.skinCalc.push_back(skinMatrix);
+
+#ifdef DEBUG_EDITOR
+        sMesh.skin_calc_indices.push_back(vertIdx);
+#endif
 	}
 }
 

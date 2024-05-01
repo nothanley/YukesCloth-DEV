@@ -50,13 +50,13 @@ MainWindow::InitializeDebugWidgets(){
     ui->centralwidget->layout()->addWidget(frame);
     frame->layout()->addWidget(m_DbgTextWidget);
     frame->layout()->addWidget(m_DbgConsoleLog);
-    frame->setFixedHeight(120);
+    frame->setFixedHeight(200);
 
-    m_DbgTextWidget->setMaximumHeight(120);
-    m_DbgConsoleLog->setMaximumHeight(120);
+    m_DbgTextWidget->setMaximumHeight(200);
+    m_DbgConsoleLog->setMaximumHeight(200);
     m_DbgConsoleLog->setReadOnly(true);
     m_DbgTextWidget->setReadOnly(true);
-    this->resize(width(),height()+80);
+    this->resize(width(),height()+120);
 }
 #endif
 
@@ -888,10 +888,10 @@ MainWindow::ValidateLinks()
 }
 
 
-
-
-
-
+void MainWindow::on_actionRemoveTreeItem_triggered()
+{
+    MainWindow::on_actionRemove_Item_triggered();
+}
 
 
 
