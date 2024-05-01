@@ -24,6 +24,9 @@
     <Filter Include="Encoder\Import">
       <UniqueIdentifier>{3995e0b5-d8e5-4e77-8f52-c8cefe41b938}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cloth\MAIN_STRUCT_RENAME THIS">
+      <UniqueIdentifier>{7dbfe925-2b12-4069-a438-cd61994f9f27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -31,15 +34,6 @@
     </ClCompile>
     <ClCompile Include="include\BinaryIO.cpp">
       <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cloth\SimMesh.cpp">
-      <Filter>Cloth</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cloth\SimObj.cpp">
-      <Filter>Cloth</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cloth\ClothStructs.cpp">
-      <Filter>Cloth</Filter>
     </ClCompile>
     <ClCompile Include="src\Container\ClothContainer.cpp">
       <Filter>Container</Filter>
@@ -56,19 +50,22 @@
     <ClCompile Include="src\Encoder\Import\SimMeshJson.cpp">
       <Filter>Encoder\Import</Filter>
     </ClCompile>
+    <ClCompile Include="CGameCloth.cpp">
+      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\SimMesh.cpp">
+      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\SimObj.cpp">
+      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\ClothStructs.cpp">
+      <Filter>Container</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BinaryIO.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Cloth\SimMesh.h">
-      <Filter>Cloth</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Cloth\SimObj.h">
-      <Filter>Cloth</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Cloth\ClothStructs.h">
-      <Filter>Cloth</Filter>
     </ClInclude>
     <ClInclude Include="src\Container\ClothContainer.h">
       <Filter>Container</Filter>
@@ -87,6 +84,21 @@
     </ClInclude>
     <ClInclude Include="include\Json.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameCloth.h">
+      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\SimMesh.h">
+      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\SimObj.h">
+      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\ClothStructs.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="cloth_tags.h">
+      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

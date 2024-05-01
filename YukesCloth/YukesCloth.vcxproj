@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CGameCloth.cpp" />
     <ClCompile Include="include\BinaryIO.cpp">
       <DeploymentContent>false</DeploymentContent>
     </ClCompile>
@@ -143,6 +144,8 @@
     <ClCompile Include="src\Encoder\Import\SimMeshJson.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CGameCloth.h" />
+    <ClInclude Include="cloth_tags.h" />
     <ClInclude Include="include\BinaryIO.h" />
     <ClInclude Include="include\Json.hpp" />
     <ClInclude Include="src\Cloth\ClothStructs.h" />

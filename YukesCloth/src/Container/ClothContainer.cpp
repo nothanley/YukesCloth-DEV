@@ -1,10 +1,16 @@
 #include "ClothContainer.h"
-#include "../Cloth/SimObj.h"
+#include "../CGameCloth.h"
 #include "winsock.h"
 
 using namespace std;
 using namespace BinaryIO;
 
+
+CClothContainer::CClothContainer(const char* filePath) :
+	m_pClothSimObj(nullptr),
+	m_sFilePath(filePath)
+{
+}
 
 static uint64_t GetFileBufferSize(std::filebuf* buffer) {
 	buffer->pubseekoff(0, std::ios::end);
@@ -13,16 +19,20 @@ static uint64_t GetFileBufferSize(std::filebuf* buffer) {
 }
 
 void 
-CClothContainer::Load() {
-	if (this->fs == nullptr)
+CClothContainer::open() 
+{
+	if (!fs)
 		this->fs = new std::ifstream(this->m_sFilePath, ios::binary);
+
 	if (!fs->good())
-		throw("Cannot read YCL stream.");
-	ValidateContainer();
+		throw std::runtime_error("Cannot read YCL stream.");
 
-	if (this->isOk) { ReadContents(); }
-    else{ throw("Invalid YCL file."); }
+	this->ValidateContainer();
 
+	if (!this->isOk)
+		throw std::runtime_error("Cannot load invalid YCL file.");
+
+	this->ReadContents();
 	fs->close();
 }
 
@@ -30,8 +40,8 @@ void
 CClothContainer::ReadContents() {
 	printf("Opening File: %s\n", m_sFilePath.c_str());
 
-	m_pClothSimObj = new CSimObj(fs);
-	m_pClothSimObj->Create();
+	m_pClothSimObj = new CGameCloth(fs);
+	m_pClothSimObj->load();
 }
 
 void 

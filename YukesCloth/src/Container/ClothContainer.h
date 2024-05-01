@@ -6,26 +6,22 @@
 using namespace std;
 using namespace BinaryIO;
 
-class CSimObj;
-class CClothContainer {
-	enum {
+class CGameCloth;
+class CClothContainer 
+{
+	enum enHeaderTags{
 		YCLHEAD = 0x0
 	};
 
 public:
-	CClothContainer(const char* FilePath) {
-		this->m_sFilePath = FilePath;
-		Load();
-		fs->close();
-	}
-
-	CSimObj* m_pClothSimObj = nullptr;
+	CClothContainer(const char* FilePath);
+	void open();
 
 private:
-	void Load();
 	void ReadContents();
 	void ValidateContainer();
 
+	CGameCloth* m_pClothSimObj;
 	std::ifstream* fs = nullptr;
 	std::string m_sFilePath;
 	uint64_t m_iFileSize;

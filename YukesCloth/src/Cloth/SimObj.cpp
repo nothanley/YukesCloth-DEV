@@ -10,57 +10,31 @@ using namespace BinaryIO;
 #include <iostream> 
 #endif 
 
-CSimObj::CSimObj(std::ifstream* fs) {
-	this->m_pDataStream = fs;
+
+CSimObj::CSimObj() : 
+	m_pStHead(nullptr)
+{
 }
 
-void 
-CSimObj::UpdateStrings() {
-
-    for (auto child : m_pStHead->children) {
-        uint32_t type = child->eType;
-
-        if (type == enTagType_SimMesh) {
-			child->pSimMesh->sModelName = m_sStringTable.at(child->pSimMesh->sMeshIndex);
-            child->pSimMesh->sObjName  = m_sStringTable.at(child->pSimMesh->sObjIndex);
-		}
-        else if(type == enTagType_SimLine){
-            child->pSimMesh->sModelName = m_sStringTable.at(child->pSimMesh->sNameIdx);
-            child->pSimMesh->sObjName = "Line";
-        }
-
-	}
-
-}
 
 void
-CSimObj::Create() {
-	/* Initialize Tag Header */
-	m_pStHead = new StTag{ _U32,_U32,_U32,_U32 };
+CSimObj::UpdateStrings() {
 
-#ifdef DEBUG_CONSOLE
-	printf("\n====== StHead {sTagCount:%d, eType:%d, sSize:%d, sTotalSize:%d} ======\n",
-			m_pStHead->sTagCount, m_pStHead->eType, m_pStHead->sSize, m_pStHead->sTotalSize);
-#endif
+	for (auto child : m_pStHead->children) {
+		uint32_t type = child->eType;
 
-	/* Update stream pointer */
-	m_iStreamPos += m_pStHead->sSize;
-	
-	/* Iterate and collect all child nodes */
-	for (int i = 0; i < m_pStHead->sTagCount; i++) {
-		GetTag(m_iStreamPos, m_pStHead);
+		if (type == enTagType_SimMesh) {
+			child->pSimMesh->sModelName = m_sStringTable.at(child->pSimMesh->sMeshIndex);
+			child->pSimMesh->sObjName = m_sStringTable.at(child->pSimMesh->sObjIndex);
+		}
+		else if (type == enTagType_SimLine) {
+			child->pSimMesh->sModelName = m_sStringTable.at(child->pSimMesh->sNameIdx);
+			child->pSimMesh->sObjName = "Line";
+		}
+
 	}
 
-	/* Setup node and string tables */
-	StTag* nTableTag = FindTag(enTagType_NodeTbl);
-	if (nTableTag) { InitTag(*nTableTag); }
-	StTag* strTableTag = FindTag(enTagType_StrTbl);
-	if (strTableTag) { InitTag(*strTableTag); }
-
-	/* Initialize all other tags */
-	SetupTags(m_pStHead);
-	UpdateStrings();
-};
+}
 
 StTag*
 CSimObj::FindTag(uint32_t enTagType) {
@@ -125,7 +99,7 @@ CSimObj::GetTag(uintptr_t& streamBegin, StTag* pParentTag) {
 #endif
 	
 	/* Get number of child nodes */
-	uint32_t numNodes = yclutils::hasIndex(rootNodes,stDataTag->eType) ? _U32 : 0;
+	uint32_t numNodes = yclutils::hasIndex(ROOT_NODES,stDataTag->eType) ? _U32 : 0;
 
 	/* Add node to parent vector */
 	stDataTag->pParent = pParentTag;
@@ -177,6 +151,17 @@ CSimObj::InitTag(StTag& tag) {
     SaveTagBinary(m_pDataStream, m_iStreamPos, &tag);
 #endif
 
+	/* debug read data to temp buffer */
+	//if (tag.eType == enTagType_SimMesh_SkinCalc)
+		//printf("");
+
+	//char* temp_bin = new char[tag.sTotalSize];
+	//this->m_pDataStream->read(temp_bin, tag.sTotalSize);
+	//this->m_pDataStream->seekg(tag.streamPointer);
+	//delete[] temp_bin;
+	/* */
+	
+
 	switch (tag.eType) {
 		case enTagType_SimMesh:
 			CSimMeshData::GetSimMesh(tag,this);
@@ -201,6 +186,7 @@ CSimObj::InitTag(StTag& tag) {
 			CSimSubObj_RCN::GetRecalcNormals(*tag.pSimMesh, this);
 			break;
 		case enTagType_SimMesh_Skin:
+			// todo: look this over for 2024 format
 			CSimMeshData::GetSkinData(*tag.pSimMesh,this);
 			break;
 		case enTagType_SimMesh_SimLinkSrc:
@@ -213,7 +199,7 @@ CSimObj::InitTag(StTag& tag) {
             CSimMeshData::GetSimMeshStacks(*tag.pSimMesh,this);
 			break;
 		case enTagType_SimMesh_SkinCalc:
-			CSimMeshData::GetSkinCalc(*tag.pSimMesh,this);
+			//CSimMeshData::GetSkinCalc(*tag.pSimMesh,this);
 			break;
 		case enTagType_SimMesh_SkinPaste:
 			CSimMeshData::GetSkinPaste(*tag.pSimMesh,this);
@@ -261,7 +247,8 @@ CSimObj::InitTag(StTag& tag) {
 			CSimMeshData::GetNodeTable(this);
 			break;
 		case enTagType_SimMesh_SimLinkTar:
-			CSimMeshData::GetLinkTar(*tag.pSimMesh,this);
+			// todo: stream type unk 2024
+			//CSimMeshData::GetLinkTar(*tag.pSimMesh,this);
 			break;
 		case enTagType_ColIDTbl:
 			CSimMeshData::GetColIDTbl(this);
