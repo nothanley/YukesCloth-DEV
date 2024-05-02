@@ -9,7 +9,7 @@ CSimMeshSkin::CSimMeshSkin(CSimObj* obj, char*& data) :
 {}
 
 
-void CSimMeshSkin::GetSkinData(StSimMesh& sMesh)
+void CSimMeshSkin::loadSkinData(StSimMesh& sMesh)
 {
 	/* This buffer is arranged with respect to the simVtx table,
 		correct the output to match the table */
@@ -63,7 +63,7 @@ void CSimMeshSkin::GetSkinData(StSimMesh& sMesh)
 	sMesh.skin.nodePalette = skinPalette;
 }
 
-void CSimMeshSkin::GetSkinCalc(StSimMesh& sMesh) 
+void CSimMeshSkin::loadSkinCalc(StSimMesh& sMesh)
 {
 	uint32_t numSkinVerts = u32;
 	m_data = (char*)m_pSimObj->pos + 0x10;
@@ -80,7 +80,7 @@ void CSimMeshSkin::GetSkinCalc(StSimMesh& sMesh)
 	}
 }
 
-void CSimMeshSkin::GetSkinPaste(StSimMesh& sMesh)
+void CSimMeshSkin::loadSkinPaste(StSimMesh& sMesh)
 {
 	uint32_t numPasteVerts = u32;
 	m_data = (char*)m_pSimObj->pos + 0x10;

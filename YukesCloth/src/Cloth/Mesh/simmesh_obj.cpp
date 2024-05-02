@@ -74,7 +74,7 @@ StSimMesh* CSimMeshSubObj::GetMeshSourceObj(const std::string& meshName)
 }
 
 
-void CSimMeshSubObj::GetLinkTar(StSimMesh& sLine)
+void CSimMeshSubObj::loadLinkTar(StSimMesh& sLine)
 {
 	LinkTarget meshTarget;
 	meshTarget.source = ReadString(m_data, 0x80);

@@ -8,7 +8,7 @@ CSimMeshDef::CSimMeshDef(CSimObj* obj, char*& data) :
 	m_data(data)
 {}
 
-void CSimMeshDef::GetSimMesh(StTag& parent) 
+void CSimMeshDef::loadSimMesh(StTag& parent)
 {
 	StSimMesh* _SimMesh = new StSimMesh{ u32, u32, u32, u32, (bool)u32, (bool)u32 };
 
@@ -24,7 +24,7 @@ void CSimMeshDef::GetSimMesh(StTag& parent)
 	parent.pSimMesh = _SimMesh;
 }
 
-void CSimMeshDef::GetSimLine(StTag& pTag) 
+void CSimMeshDef::loadSimLine(StTag& pTag)
 {
 	StSimMesh* pSimLine = new StSimMesh;
 	pSimLine->numTags = u32;
@@ -43,7 +43,7 @@ void CSimMeshDef::GetSimLine(StTag& pTag)
 }
 
 
-void CSimMeshDef::GetLineDef(StSimMesh& sMesh) 
+void CSimMeshDef::loadLineDef(StSimMesh& sMesh)
 {
 	uint32_t numLines = u32;
 	sMesh.lines.sSize = numLines;
@@ -106,7 +106,7 @@ void CSimMeshDef::AssignNode(StSimMesh& sLine)
 	}
 }
 
-void CSimMeshDef::GetNodeTable()
+void CSimMeshDef::loadNodeTable()
 {
 	uint32_t numChildren = u32;
 	uint32_t numNodes = u32;
@@ -120,5 +120,16 @@ void CSimMeshDef::GetNodeTable()
 		SimNode node{ i , m_pSimObj->loadString() };
 		m_pSimObj->addNode(node);
 	}
+}
+
+void CSimMeshDef::InitializeNodePalette(const StTag& tag)
+{
+	StTag* assignTag = m_pSimObj->FindTag(enTagType_SimLine_AssignNode, tag.pParent);
+	if (!assignTag) return;
+
+	assignTag->pSimMesh = tag.pParent->pSimMesh;
+	m_pSimObj->initTag(assignTag);
+
+	m_data = (char*)tag.streamPointer + 0xC;
 }
 

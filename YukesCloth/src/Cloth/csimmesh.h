@@ -16,6 +16,8 @@ public:
     const StTag* getRootTag() const { return m_pStHead; }
     const SimNode& getNode(const int index) { return m_nodeTable.at(index); }
     const std::string& getString(const int index) { return m_stringTable.at(index); }
+    StTag* FindTag(uint32_t enTagType); /* Non-Recursive root search */
+    StTag* FindTag(uint32_t enTagType, StTag* pParent); /* Recursive relative search */
 
 public:
     void clear_nodes() { m_nodeTable.clear(); }
@@ -25,6 +27,7 @@ public:
     void addNode(const SimNode& node) { m_nodeTable.push_back(node); }
 
 public:
+    virtual void initTag(StTag* tag) = 0;
     void loadStringTable();
     std::string loadString();
     uintptr_t pos = std::ios::beg;

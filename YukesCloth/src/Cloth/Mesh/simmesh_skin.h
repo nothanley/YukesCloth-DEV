@@ -9,12 +9,12 @@ public:
     CSimMeshSkin(CSimObj* obj, char*& data);
 
 public:
-    void GetSkinData(StSimMesh& sMesh);
-    void GetSkinCalc(StSimMesh& sMesh);
-    void GetSkinPaste(StSimMesh& sMesh);
+    void loadSkinData(StSimMesh& sMesh);
+    void loadSkinCalc(StSimMesh& sMesh);
+    void loadSkinPaste(StSimMesh& sMesh);
 
 private:
-    char* m_data;
+    char*& m_data;
     CSimObj* m_pSimObj;
 };
 

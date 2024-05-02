@@ -17,7 +17,7 @@ public:
     void loadCollisionVerts(StTag& tag, StSimMesh& sMesh);
 
 private:
-    char* m_data;
+    char*& m_data;
     CSimObj* m_pSimObj;
 };
 

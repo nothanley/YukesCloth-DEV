@@ -7,7 +7,7 @@ CSimMeshConstraint::CSimMeshConstraint(CSimObj* obj, char*& data) :
     m_data(data)
 {}
 
-void CSimMeshConstraint::GetForce(StSimMesh& sMesh)
+void CSimMeshConstraint::loadForce(StSimMesh& sMesh)
 {
 	uint32_t numVerts = u32;
 	sMesh.force.parameters = std::vector<float>{ f32, f32, f32, f32 };
@@ -19,7 +19,7 @@ void CSimMeshConstraint::GetForce(StSimMesh& sMesh)
 	}
 }
 
-void CSimMeshConstraint::GetConstraintStretchLink(StSimMesh& sMesh) 
+void CSimMeshConstraint::loadConstraintStretchLink(StSimMesh& sMesh)
 {
 	uint32_t numLinks = u32;
 	m_data = (char*)m_pSimObj->pos + 0x10;
@@ -41,7 +41,7 @@ void CSimMeshConstraint::GetConstraintStretchLink(StSimMesh& sMesh)
 }
 
 
-void CSimMeshConstraint::GetConstraintStandardLink(StSimMesh& sMesh) 
+void CSimMeshConstraint::loadConstraintStandardLink(StSimMesh& sMesh)
 {
 
 	SimConstraint constraint{ "Standard", enTagType_SimMesh_CtStdLink };
@@ -65,7 +65,7 @@ void CSimMeshConstraint::GetConstraintStandardLink(StSimMesh& sMesh)
 	sMesh.constraints.push_back(constraint);
 }
 
-void CSimMeshConstraint::GetConstraintBendLink(StSimMesh& sMesh) 
+void CSimMeshConstraint::loadConstraintBendLink(StSimMesh& sMesh)
 {
 	SimConstraint constraint{ "Bend", enTagType_SimMesh_CtBendLink };
 	uint32_t numLinks = u32;
@@ -87,7 +87,7 @@ void CSimMeshConstraint::GetConstraintBendLink(StSimMesh& sMesh)
 	sMesh.constraints.push_back(constraint);
 }
 
-void CSimMeshConstraint::GetBendStiffness(StSimMesh& sMesh)
+void CSimMeshConstraint::loadBendStiffness(StSimMesh& sMesh)
 {
 	SimConstraint constraint{ "BendStiffness", enTagType_SimMesh_BendingStiffness };
 	uint32_t numTris = u32;
@@ -113,7 +113,7 @@ void CSimMeshConstraint::GetBendStiffness(StSimMesh& sMesh)
 	sMesh.constraints.push_back(constraint);
 }
 
-void CSimMeshConstraint::GetConstraintFixation(StSimMesh& sMesh)
+void CSimMeshConstraint::loadConstraintFixation(StSimMesh& sMesh)
 {
 	uint32_t numVerts = u32;
 	m_data = (char*)m_pSimObj->pos + 0x10;

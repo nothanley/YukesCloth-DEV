@@ -9,10 +9,10 @@ public:
     CSimMeshPattern(CSimObj* obj, char*& data);
 
 public:
-    void GetSimMeshPattern(StSimMesh& sMesh);
-    void GetSimMeshStacks(StSimMesh& sMesh);
+    void loadSimMeshPattern(StSimMesh& sMesh);
+    void loadSimMeshStacks(StSimMesh& sMesh);
 
 private:
-    char* m_data;
+    char*& m_data;
     CSimObj* m_pSimObj;
 };

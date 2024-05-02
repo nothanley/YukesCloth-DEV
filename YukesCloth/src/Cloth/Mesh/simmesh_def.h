@@ -9,17 +9,18 @@ public:
     CSimMeshDef(CSimObj* obj, char*& data);
 
 public:
-    void GetSimMesh(StTag& parent);
-    void GetSimLine(StTag& pTag);
+    void loadSimMesh(StTag& parent);
+    void loadSimLine(StTag& pTag);
     void AssignNode(StSimMesh& sLine);
-    void GetLineDef(StSimMesh& sMesh);
-    void GetNodeTable();
+    void loadLineDef(StSimMesh& sMesh);
+    void InitializeNodePalette(const StTag& parent);
+    void loadNodeTable();
 
 private:
     bool useOldAssignNodeSchema(const uintptr_t& address, char*& fs, int numNodes);
 
 private:
-    char* m_data;
+    char*& m_data;
     CSimObj* m_pSimObj;
 };
 

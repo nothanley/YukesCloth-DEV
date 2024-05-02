@@ -13,14 +13,14 @@ public:
     void AssignSubObjVtx(StSimMesh& sMesh);
     void AssignSimVtx(StSimMesh& sMesh);
     void SaveOldVtxs(StSimMesh& sMesh);
-    void GetLinkTar(StSimMesh& sLine);
+    void loadLinkTar(StSimMesh& sLine);
     void Link_DefineSourceMesh(StSimMesh& sMesh);
 
 private:
     StSimMesh* GetMeshSourceObj(const std::string& meshName);
 
 private:
-    char* m_data;
+    char*& m_data;
     CSimObj* m_pSimObj;
 };
 

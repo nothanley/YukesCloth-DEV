@@ -9,15 +9,15 @@ public:
     CSimMeshConstraint(CSimObj* obj, char*& data);
 
 public:
-    void GetForce(StSimMesh& sMesh);
-    void GetConstraintStretchLink(StSimMesh& sMesh);
-    void GetConstraintStandardLink(StSimMesh& sMesh);
-    void GetConstraintBendLink(StSimMesh& sMesh);
-    void GetConstraintFixation(StSimMesh& sMesh);
-    void GetBendStiffness(StSimMesh& sMesh);
+    void loadForce(StSimMesh& sMesh);
+    void loadConstraintStretchLink(StSimMesh& sMesh);
+    void loadConstraintStandardLink(StSimMesh& sMesh);
+    void loadConstraintBendLink(StSimMesh& sMesh);
+    void loadConstraintFixation(StSimMesh& sMesh);
+    void loadBendStiffness(StSimMesh& sMesh);
 
 private:
-    char* m_data;
+    char*& m_data;
     CSimObj* m_pSimObj;
 };
 

@@ -11,7 +11,7 @@ CSimSubObj_RCN::CSimSubObj_RCN(CSimObj* obj, char*& data) :
 {}
 
 
-void CSimSubObj_RCN::getRCNData(StSimMesh& sMesh)
+void CSimSubObj_RCN::loadRCNData(StSimMesh& sMesh)
 {
 	uint32_t numNodes = u32;
 	sMesh.rcn.parameters.push_back(u32);
@@ -20,7 +20,7 @@ void CSimSubObj_RCN::getRCNData(StSimMesh& sMesh)
 	sMesh.rcn.parameters.push_back(u32); /* number of item b */
 }
 
-void CSimSubObj_RCN::getFaceNormalDegCountTbl(StSimMesh& sMesh, const int& numFaceNrmVtxIndices) 
+void CSimSubObj_RCN::loadFaceNormalDegCountTbl(StSimMesh& sMesh, const int& numFaceNrmVtxIndices)
 {
 	/* Gets the total length of each element */
 	/* Defined as face normal degree count table */
@@ -33,7 +33,7 @@ void CSimSubObj_RCN::getFaceNormalDegCountTbl(StSimMesh& sMesh, const int& numFa
 }
 
 /* Collects all corner indices of specified polygon and creates a table */
-void CSimSubObj_RCN::getFaceNormalVtxIndexTbl(StSimMesh& sMesh, const int& numFaceNrmVtxIndices)
+void CSimSubObj_RCN::loadFaceNormalVtxIndexTbl(StSimMesh& sMesh, const int& numFaceNrmVtxIndices)
 {
 	for (int i = 0; i < numFaceNrmVtxIndices; i++) {
 
@@ -54,7 +54,7 @@ void CSimSubObj_RCN::getFaceNormalVtxIndexTbl(StSimMesh& sMesh, const int& numFa
 }
 
 /* Defines total number of links for each vertex normal face value */
-void CSimSubObj_RCN::getVtxNormalFaceLinkCountTbl(StSimMesh& sMesh, const int& numVtxNrmFaceLinks)
+void CSimSubObj_RCN::loadVtxNormalFaceLinkCountTbl(StSimMesh& sMesh, const int& numVtxNrmFaceLinks)
 {
 	/* Gets the total length of each element */
 	/* Defined as vertex normal face link count table*/
@@ -68,7 +68,7 @@ void CSimSubObj_RCN::getVtxNormalFaceLinkCountTbl(StSimMesh& sMesh, const int& n
 
 
 
-void CSimSubObj_RCN::getVtxNormalFaceLinkTbl(StSimMesh& sMesh, const int& numVtxNrmFaceLinks)
+void CSimSubObj_RCN::loadVtxNormalFaceLinkTbl(StSimMesh& sMesh, const int& numVtxNrmFaceLinks)
 {
 	/* Reads element index values using specified length value */
 	/* Defined as vertex normal face link table*/
@@ -85,7 +85,7 @@ void CSimSubObj_RCN::getVtxNormalFaceLinkTbl(StSimMesh& sMesh, const int& numVtx
 	}
 }
 
-void CSimSubObj_RCN::getRecalcNormals(StSimMesh& sMesh) 
+void CSimSubObj_RCN::loadRecalcNormals(StSimMesh& sMesh)
 {
 	uint32_t numNodes                = u32;
 	sMesh.rcn.numFaceNrmVtxIndices   = u32;
@@ -94,12 +94,12 @@ void CSimSubObj_RCN::getRecalcNormals(StSimMesh& sMesh)
 	uint32_t vtxNrmFaceLinkCountSize = u32;
 
 	/* Defines number & index of vertices connected to quad face normals*/
-	getFaceNormalDegCountTbl(sMesh, sMesh.rcn.numFaceNrmVtxIndices);
-	getFaceNormalVtxIndexTbl(sMesh, sMesh.rcn.numFaceNrmVtxIndices);
+	loadFaceNormalDegCountTbl(sMesh, sMesh.rcn.numFaceNrmVtxIndices);
+	loadFaceNormalVtxIndexTbl(sMesh, sMesh.rcn.numFaceNrmVtxIndices);
 
 	/* Defines ... */
-	getVtxNormalFaceLinkCountTbl(sMesh, sMesh.rcn.numVtxNrmFaceLinks);
-	getVtxNormalFaceLinkTbl(sMesh, sMesh.rcn.numVtxNrmFaceLinks);
+	loadVtxNormalFaceLinkCountTbl(sMesh, sMesh.rcn.numVtxNrmFaceLinks);
+	loadVtxNormalFaceLinkTbl(sMesh, sMesh.rcn.numVtxNrmFaceLinks);
 }
 
 

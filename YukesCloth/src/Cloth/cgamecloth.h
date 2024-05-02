@@ -15,13 +15,10 @@ public:
 	void load();
 
 protected:
-	void InitTag(StTag& tag);
-	void SetupTags(StTag* tag);
-	StTag* GetTag(StTag* pParentTag = nullptr);
-	StTag* FindTag(uint32_t enTagType); /* Non-Recursive root search */
-	StTag* FindTag(uint32_t enTagType, StTag* pParent); /* Recursive relative search */
-	void InitializeNodePalette(const StTag& parent);
-	void UpdateStrings();
+	void initTag(StTag* tag);
+	void setupTags(StTag* tag);
+	StTag* getTag(StTag* pParentTag = nullptr);
+	void updateStrings();
 
 private:
 	void setupSimHandles();

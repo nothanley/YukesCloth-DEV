@@ -41,3 +41,34 @@ float GetVectorDistance(Vector4& vec_a, Vector4& vec_b) {
 
 	return sqrtf((a * a) + (b * b) + (c * c));
 }
+
+
+StTag* CSimObj::FindTag(uint32_t enTagType)
+{
+	for (auto child : m_pStHead->children) {
+		if (child->eType == enTagType) {
+			return child;
+		}
+	}
+	return nullptr;
+}
+
+StTag* CSimObj::FindTag(uint32_t enTagType, StTag* pParent)
+{
+	StTag* result = nullptr;
+
+	for (auto child : pParent->children) {
+		if (child->eType == enTagType) {
+			return child;
+		}
+
+		result = FindTag(enTagType, child);
+
+		if (result)
+			break;
+	}
+
+	return result;
+}
+
+

@@ -40,23 +40,20 @@ void CGameCloth::load()
 	/* Iterate and collect all child nodes */
 	this->pos += m_pStHead->sSize;
 	for (int i = 0; i < m_pStHead->sTagCount; i++) {
-		GetTag(m_pStHead);
+		getTag(m_pStHead);
 	}
 
 	/* Setup node and string tables */
-	StTag* nTableTag = FindTag(enTagType_NodeTbl);
-	if (nTableTag) { InitTag(*nTableTag); }
-
-	StTag* strTableTag = FindTag(enTagType_StrTbl);
-	if (strTableTag) { InitTag(*strTableTag); }
+	initTag( FindTag(enTagType_NodeTbl) );
+	initTag( FindTag(enTagType_StrTbl) );
 
 	/* Initialize all other tags */
-	SetupTags(m_pStHead);
-	UpdateStrings();
+	setupTags(m_pStHead);
+	updateStrings();
 };
 
 
-void CGameCloth::UpdateStrings()
+void CGameCloth::updateStrings()
 {
 	for (auto child : m_pStHead->children) {
 		uint32_t type = child->eType;
@@ -72,38 +69,10 @@ void CGameCloth::UpdateStrings()
 	}
 }
 
-StTag* CGameCloth::FindTag(uint32_t enTagType) 
+
+void CGameCloth::setupTags(StTag* pParentTag) 
 {
-	for (auto child : m_pStHead->children) {
-		if (child->eType == enTagType) {
-			return child;
-		}
-	}
-	return nullptr;
-}
-
-StTag* CGameCloth::FindTag(uint32_t enTagType, StTag* pParent)
-{
-	StTag* result = nullptr;
-
-	for (auto child : pParent->children) {
-		if (child->eType == enTagType) {
-			return child;
-		}
-
-		result = FindTag(enTagType, child);
-
-		if (result)
-			break;
-	}
-
-	return result;
-}
-
-
-void CGameCloth::SetupTags(StTag* pParentTag) 
-{
-	InitTag(*pParentTag);
+	initTag(pParentTag);
 
 	/* Setup and LOAD all child nodes */
 	for (int i = 0; i < pParentTag->children.size(); i++) 
@@ -111,12 +80,12 @@ void CGameCloth::SetupTags(StTag* pParentTag)
 		if (pParentTag->pSimMesh)
 			pParentTag->children.at(i)->pSimMesh = pParentTag->pSimMesh;
 
-		SetupTags(pParentTag->children.at(i));
+		setupTags(pParentTag->children.at(i));
 	}
 
 }
 
-StTag* CGameCloth::GetTag(StTag* pParentTag) 
+StTag* CGameCloth::getTag(StTag* pParentTag) 
 {
 	this->m_data = (char*)pos;
 	StTag* stDataTag = new StTag{ u32,u32,u32 };
@@ -136,23 +105,10 @@ StTag* CGameCloth::GetTag(StTag* pParentTag)
 	this->pos += (numNodes == 0) ? stDataTag->sTotalSize : stDataTag->sSize;
 
 	for (uint32_t i = 0; i < numNodes; i++) {
-		StTag* childNode = GetTag(stDataTag);
+		StTag* childNode = getTag(stDataTag);
 	}
 
 	return stDataTag;
-}
-
-void CGameCloth::InitializeNodePalette(const StTag& tag) 
-{
-	uintptr_t address = pos;
-	StTag* assignTag = FindTag(enTagType_SimLine_AssignNode, tag.pParent);
-	if (!assignTag) return;
-
-	assignTag->pSimMesh = tag.pParent->pSimMesh;
-	InitTag(*assignTag);
-
-	pos = address;
-	m_data = (char*)tag.streamPointer;
 }
 
 #ifdef DEBUG_EDITOR
@@ -165,95 +121,95 @@ SaveTagBinary(std::ifstream* fs, uintptr_t address, StTag* pTag) {
 }
 #endif
 
-void CGameCloth::InitTag(StTag& tag) 
+void CGameCloth::initTag(StTag* tag) 
 {
-	if (tag.eType == 0x0) { return; }
-	this->pos = tag.streamPointer - 0xC;
-	m_data = (char*)tag.streamPointer;
+	if (!tag || tag->eType == 0x0) { return; }
+	this->pos    = tag->streamPointer;
+	this->m_data = (char*)pos + 0xC;
 
 #ifdef DEBUG_EDITOR
 	SaveTagBinary(m_pDataStream, m_iStreamPos, &tag);
 #endif
 
-	switch (tag.eType) {
+	switch (tag->eType) {
 		case enTagType_SimMesh:
-			m_defHandler->GetSimMesh(tag);
+			m_defHandler->loadSimMesh(*tag);
 			break;
 		case enTagType_SimMesh_AssignSubObj:
-			m_subobjHandler->AssignSubObj(*tag.pSimMesh);
+			m_subobjHandler->AssignSubObj(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_AssignSubObjVtx:
-			m_subobjHandler->AssignSubObjVtx(*tag.pSimMesh);
+			m_subobjHandler->AssignSubObjVtx(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_AssignSimVtx:
-			m_subobjHandler->AssignSimVtx(*tag.pSimMesh);
+			m_subobjHandler->AssignSimVtx(*tag->pSimMesh);
 			break;
 		case enTagType_SimLine_AssignNode:
-			if (tag.pSimMesh->nodePalette.size() > 0) { break; }
-			m_defHandler->AssignNode(*tag.pParent->pSimMesh);
+			if (tag->pSimMesh->nodePalette.size() > 0) { break; }
+			m_defHandler->AssignNode(*tag->pParent->pSimMesh);
 			break;
 		case enTagType_SimMesh_RCN:
-			m_rcnHandler->getRCNData(*tag.pSimMesh);
+			m_rcnHandler->loadRCNData(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_RCNSubObj:
-			m_rcnHandler->getRecalcNormals(*tag.pSimMesh);
+			m_rcnHandler->loadRecalcNormals(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_Skin: // todo: look this over for 2024 format
 			//m_skinHandler->GetSkinData(*tag.pSimMesh);
 			break;
 		case enTagType_SimMesh_SimLinkSrc:
-			m_subobjHandler->Link_DefineSourceMesh(*tag.pSimMesh);
+			m_subobjHandler->Link_DefineSourceMesh(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_Pattern:
-			m_patternHandler->GetSimMeshPattern(*tag.pSimMesh);
+			m_patternHandler->loadSimMeshPattern(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_Stacks:
-			m_patternHandler->GetSimMeshStacks(*tag.pSimMesh);
+			m_patternHandler->loadSimMeshStacks(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_SkinCalc:
 			//CSimMeshData::GetSkinCalc(*tag.pSimMesh,this);
 			break;
 		case enTagType_SimMesh_SkinPaste:
-			m_skinHandler->GetSkinPaste(*tag.pSimMesh);
+			m_skinHandler->loadSkinPaste(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_OldVtxSave:
-			m_subobjHandler->SaveOldVtxs(*tag.pSimMesh);
+			m_subobjHandler->SaveOldVtxs(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_Force:
-			m_constHandler->GetForce(*tag.pSimMesh);
+			m_constHandler->loadForce(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_CtStretchLink:
-			m_constHandler->GetConstraintStretchLink(*tag.pSimMesh);
+			m_constHandler->loadConstraintStretchLink(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_CtStdLink:
-			m_constHandler->GetConstraintStandardLink(*tag.pSimMesh);
+			m_constHandler->loadConstraintStandardLink(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_CtBendLink:
-			m_constHandler->GetConstraintBendLink(*tag.pSimMesh);
+			m_constHandler->loadConstraintBendLink(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_BendingStiffness:
-			m_constHandler->GetBendStiffness(*tag.pSimMesh);
+			m_constHandler->loadBendStiffness(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_CtFixation:
-			m_constHandler->GetConstraintFixation(*tag.pSimMesh);
+			m_constHandler->loadConstraintFixation(*tag->pSimMesh);
 			break;
 		case enTagType_SimLine:
-			m_defHandler->GetSimLine(tag);
+			m_defHandler->loadSimLine(*tag);
 			break;
 		case enTagType_SimLine_LineDef:
-			InitializeNodePalette(tag);
-			m_defHandler->GetLineDef(*tag.pSimMesh);
+			m_defHandler->InitializeNodePalette(*tag);
+			m_defHandler->loadLineDef(*tag->pSimMesh);
 			break;
 		case enTagType_StrTbl:
 			if (!m_stringTable.empty()) { break; }
 			this->loadStringTable();
 			break;
 		case enTagType_String:
-			tag.sTagName = this->loadString();
+			tag->sTagName = this->loadString();
 			break;
 		case enTagType_NodeTbl:
 			if (!m_nodeTable.empty()) { break; }
-			m_defHandler->GetNodeTable();
+			m_defHandler->loadNodeTable();
 			break;
 		case enTagType_SimMesh_SimLinkTar: // todo: stream type unk 2024
 			//CSimMeshData::GetLinkTar(*tag.pSimMesh,this);
@@ -268,13 +224,13 @@ void CGameCloth::InitTag(StTag& tag)
 			m_colHandler->loadColPack();
 			break;
 		case enTagType_Capsule_Tapered:
-			m_colHandler->loadCapsuleTapered(tag);
+			m_colHandler->loadCapsuleTapered(*tag);
 			break;
 		case enTagType_Capsule_Standard:
-			m_colHandler->loadCapsuleStandard(tag);
+			m_colHandler->loadCapsuleStandard(*tag);
 			break;
 		case enTagType_SimMesh_ColVtx:
-			m_colHandler->loadCollisionVerts(tag, *tag.pSimMesh);
+			m_colHandler->loadCollisionVerts(*tag, *tag->pSimMesh);
 			break;
 		default:
 			break;

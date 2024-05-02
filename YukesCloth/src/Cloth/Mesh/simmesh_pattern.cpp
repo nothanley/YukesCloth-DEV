@@ -10,7 +10,7 @@ CSimMeshPattern::CSimMeshPattern(CSimObj* obj, char*& data) :
 
 
 void
-CSimMeshPattern::GetSimMeshPattern(StSimMesh& sMesh) {
+CSimMeshPattern::loadSimMeshPattern(StSimMesh& sMesh) {
 	if (!&sMesh) {
 		printf("Could not parse skin pattern - Missing sim mesh destination.\n");
 		return;
@@ -21,6 +21,6 @@ CSimMeshPattern::GetSimMeshPattern(StSimMesh& sMesh) {
 }
 
 void
-CSimMeshPattern::GetSimMeshStacks(StSimMesh& sMesh) {
+CSimMeshPattern::loadSimMeshStacks(StSimMesh& sMesh) {
 	uint32_t numProperties = u32;
 }
