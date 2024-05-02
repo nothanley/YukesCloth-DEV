@@ -29,17 +29,16 @@ void CGameCloth::setupSimHandles()
 void CGameCloth::load() 
 {
 	/* Initialize Tag Header */
-	m_pStHead = new StTag{ u32,u32,u32,u32 };
+	this->pos = (uintptr_t)m_data;
+	this->m_pStHead = new StTag{ u32, u32, u32, u32 };
 
 #ifdef DEBUG_CONSOLE
 	printf("\n====== StHead {sTagCount:%d, eType:%d, sSize:%d, sTotalSize:%d} ======\n",
 		m_pStHead->sTagCount, m_pStHead->eType, m_pStHead->sSize, m_pStHead->sTotalSize);
 #endif
 
-	/* Update stream pointer */
-	pos += m_pStHead->sSize;
-
 	/* Iterate and collect all child nodes */
+	this->pos += m_pStHead->sSize;
 	for (int i = 0; i < m_pStHead->sTagCount; i++) {
 		GetTag(m_pStHead);
 	}
@@ -47,6 +46,7 @@ void CGameCloth::load()
 	/* Setup node and string tables */
 	StTag* nTableTag = FindTag(enTagType_NodeTbl);
 	if (nTableTag) { InitTag(*nTableTag); }
+
 	StTag* strTableTag = FindTag(enTagType_StrTbl);
 	if (strTableTag) { InitTag(*strTableTag); }
 
@@ -118,24 +118,22 @@ void CGameCloth::SetupTags(StTag* pParentTag)
 
 StTag* CGameCloth::GetTag(StTag* pParentTag) 
 {
-	/* Init Struct Tag data */
+	this->m_data = (char*)pos;
 	StTag* stDataTag = new StTag{ u32,u32,u32 };
-	stDataTag->streamPointer = (uintptr_t)m_data;
+	stDataTag->streamPointer = (uintptr_t)pos;
 
 #ifdef DEBUG_CONSOLE
 	printf("\n[0x%x]\t- StTag {eType:%d, sSize:%d, sTotalSize:%d}\n",
 		pos, stDataTag->eType, stDataTag->sSize, stDataTag->sTotalSize);
 #endif
 
-	/* Get number of child nodes */
-	uint32_t numNodes = yclutils::hasIndex(ROOT_NODES, stDataTag->eType) ? u32 : 0;
-
 	/* Add node to parent vector */
 	stDataTag->pParent = pParentTag;
 	pParentTag->children.push_back(stDataTag);
 
 	/* Collect all child nodes */
-	m_data += (numNodes == 0) ? stDataTag->sTotalSize : stDataTag->sSize;
+	uint32_t numNodes = yclutils::hasIndex(ROOT_NODES, stDataTag->eType) ? u32 : 0;
+	this->pos += (numNodes == 0) ? stDataTag->sTotalSize : stDataTag->sSize;
 
 	for (uint32_t i = 0; i < numNodes; i++) {
 		StTag* childNode = GetTag(stDataTag);
@@ -257,8 +255,7 @@ void CGameCloth::InitTag(StTag& tag)
 			if (!m_nodeTable.empty()) { break; }
 			m_defHandler->GetNodeTable();
 			break;
-		case enTagType_SimMesh_SimLinkTar:
-			// todo: stream type unk 2024
+		case enTagType_SimMesh_SimLinkTar: // todo: stream type unk 2024
 			//CSimMeshData::GetLinkTar(*tag.pSimMesh,this);
 			break;
 		case enTagType_ColIDTbl:

@@ -6,37 +6,37 @@
 
 
 CClothContainer::CClothContainer(const char* path) :
-	m_pClothSimObj(nullptr),
+	m_pClothObj(nullptr),
 	m_filePath(path),
-	m_fileBuffer(nullptr)
+	m_data(nullptr)
 {}
 
 CClothContainer::~CClothContainer()
 {
-	if (m_fileBuffer)
-		delete m_fileBuffer;
+	if (m_data) 
+		delete m_data;
 }
 
 void CClothContainer::open() 
 {
-	char* data = SysCommon::readBinaryFile(m_filePath);
+	m_data = SysCommon::readBinaryFile(m_filePath);
 
-	if (!data || !isValidContainer())
+	if (!m_data)
 		throw std::runtime_error("Cannot load invalid YCL file.");
 
-	this->ReadContents();
+	if (this->isValidContainer(m_data))
+		ReadContents();
 }
 
 void CClothContainer::ReadContents() 
 {
 	printf("Opening File: %s\n", m_filePath.c_str());
-	m_pClothSimObj = new CGameCloth(m_fileBuffer);
-	m_pClothSimObj->load();
+	m_pClothObj = std::make_unique<CGameCloth>(m_data);
+	m_pClothObj->load();
 }
 
-bool CClothContainer::isValidContainer()
+bool CClothContainer::isValidContainer(char* data)
 {
-	uint32_t signature = ReadUInt32(m_fileBuffer);
-
-	return (ntohl(signature) != YCLHEAD);
+	uint32_t signature = ReadUInt32(data);
+	return (ntohl(signature) == YCLHEAD);
 }

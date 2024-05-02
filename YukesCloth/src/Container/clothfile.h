@@ -1,5 +1,6 @@
 /* Validates YANM file and initializes a stream upon validation success  */
 #include <fstream>
+#include <memory>
 #pragma once
 
 enum enHeaderTags {
@@ -17,11 +18,11 @@ public:
 
 private:
 	void ReadContents();
-	bool isValidContainer();
+	bool isValidContainer(char* data);
 
 private:
-	CGameCloth* m_pClothSimObj;
+	std::unique_ptr<CGameCloth> m_pClothObj;
 	std::string m_filePath;
-	char* m_fileBuffer;
+	char* m_data;
 };
 
