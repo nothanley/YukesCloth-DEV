@@ -42,15 +42,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -102,9 +102,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG_CONSOLE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG_CONSOLE;WIN32_LEAN_AND_MEAN;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)YukesCloth\src;$(SolutionDir)YukesCloth\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)YukesCloth\src;$(SolutionDir)YukesCloth\include;$(SolutionDir)YukesCloth\src\Cloth\Mesh;$(SolutionDir)YukesCloth;$(SolutionDir)YukesCloth\src\Cloth;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(SOLUTIONDIR)YukesCloth;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,9 +120,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG_CONSOLE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG_CONSOLE;WIN32_LEAN_AND_MEAN;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)YukesCloth\src;$(SolutionDir)YukesCloth\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)YukesCloth\src;$(SolutionDir)YukesCloth\include;$(SolutionDir)YukesCloth\src\Cloth\Mesh;$(SolutionDir)YukesCloth;$(SolutionDir)YukesCloth\src\Cloth;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(SOLUTIONDIR)YukesCloth;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,36 +135,52 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CGameCloth.cpp" />
     <ClCompile Include="include\BinaryIO.cpp">
       <DeploymentContent>false</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="include\common.cpp" />
+    <ClCompile Include="include\hash.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\Cloth\ClothStructs.cpp" />
-    <ClCompile Include="src\Cloth\Mesh\SimSubObj_RCN.cpp" />
-    <ClCompile Include="src\Cloth\SimMesh.cpp" />
-    <ClCompile Include="src\Cloth\SimObj.cpp" />
-    <ClCompile Include="src\Container\ClothContainer.cpp" />
-    <ClCompile Include="src\Encoder\ClothEncoder.cpp" />
-    <ClCompile Include="src\Encoder\ClothSave.cpp" />
-    <ClCompile Include="src\Encoder\Import\SimMeshJson.cpp" />
+    <ClCompile Include="src\Cloth\cgamecloth.cpp" />
+    <ClCompile Include="src\Cloth\clothstructs.cpp" />
+    <ClCompile Include="src\Cloth\csimmesh.cpp" />
+    <ClCompile Include="src\Cloth\Mesh\simmesh_col.cpp" />
+    <ClCompile Include="src\Cloth\Mesh\simmesh_constraint.cpp" />
+    <ClCompile Include="src\Cloth\Mesh\simmesh_def.cpp" />
+    <ClCompile Include="src\Cloth\Mesh\simmesh_obj.cpp" />
+    <ClCompile Include="src\Cloth\Mesh\simmesh_pattern.cpp" />
+    <ClCompile Include="src\Cloth\Mesh\simmesh_rcn.cpp" />
+    <ClCompile Include="src\Cloth\Mesh\simmesh_skin.cpp" />
+    <ClCompile Include="src\Container\clothfile.cpp" />
+    <ClCompile Include="src\Encoder\clothencoder.cpp" />
+    <ClCompile Include="src\Encoder\clothsave.cpp" />
+    <ClCompile Include="src\Encoder\Import\simmeshjson.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CGameCloth.h" />
-    <ClInclude Include="cloth_tags.h" />
     <ClInclude Include="include\BinaryIO.h" />
+    <ClInclude Include="include\common.h" />
+    <ClInclude Include="include\hash.h" />
     <ClInclude Include="include\Json.hpp" />
-    <ClInclude Include="src\Cloth\ClothStructs.h" />
-    <ClInclude Include="src\Cloth\Mesh\SimSubObj_RCN.h" />
-    <ClInclude Include="src\Cloth\SimMesh.h" />
-    <ClInclude Include="src\Cloth\SimObj.h" />
-    <ClInclude Include="src\Container\ClothContainer.h" />
-    <ClInclude Include="src\Encoder\ClothEncoder.h" />
-    <ClInclude Include="src\Encoder\ClothSave.h" />
-    <ClInclude Include="src\Encoder\Import\SimMeshJson.h" />
+    <ClInclude Include="src\Cloth\cgamecloth.h" />
+    <ClInclude Include="src\Cloth\clothstructs.h" />
+    <ClInclude Include="src\Cloth\csimmesh.h" />
+    <ClInclude Include="src\Cloth\Mesh\simmesh_col.h" />
+    <ClInclude Include="src\Cloth\Mesh\simmesh_constraint.h" />
+    <ClInclude Include="src\Cloth\Mesh\simmesh_def.h" />
+    <ClInclude Include="src\Cloth\Mesh\simmesh_obj.h" />
+    <ClInclude Include="src\Cloth\Mesh\simmesh_pattern.h" />
+    <ClInclude Include="src\Cloth\Mesh\simmesh_rcn.h" />
+    <ClInclude Include="src\Cloth\Mesh\simmesh_skin.h" />
+    <ClInclude Include="src\cloth_tags.h" />
+    <ClInclude Include="src\Container\clothfile.h" />
+    <ClInclude Include="src\Encoder\clothencoder.h" />
+    <ClInclude Include="src\Encoder\clothsave.h" />
+    <ClInclude Include="src\Encoder\Import\simmeshjson.h" />
+    <ClInclude Include="src\memoryreader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="YukesCloth" />
+    <None Include="YukesSimMesh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

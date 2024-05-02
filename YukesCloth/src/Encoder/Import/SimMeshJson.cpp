@@ -1,6 +1,6 @@
-#include <Cloth/SimMesh.h>
-#include <Cloth/SimObj.h>
-#include "Cloth/Mesh/SimSubObj_RCN.h"
+#include "csimmesh.h"
+#include "cgamecloth.h"
+#include "simmesh_rcn.h"
 #include "SimMeshJson.h"
 using JSON = nlohmann::json;
 

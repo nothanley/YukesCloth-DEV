@@ -171,11 +171,11 @@ struct StTag {
 
 	StSimMesh* pSimMesh = nullptr;
 	StTag* pParent = nullptr;
-	std::vector<StTag*> children;
 	uintptr_t streamPointer;
-    std::string sTagName;
-
 	CollisionVolume col;
+
+	std::string sTagName;
+	std::vector<StTag*> children;
 
 #ifdef DEBUG_EDITOR
     std::vector<uint8_t> data;
@@ -200,7 +200,7 @@ static Vector4 operator-(const Vector4& vec_a, const Vector4& vec_b) {
 namespace yclutils {
 	void debugPrintFloats(std::vector<Vector4>* floatArray);
 	bool hasIndex(const std::vector<int>& vec, int target);
-    std::string GetNodeName(const uint32_t &tagEnum);
+    const std::string GetNodeName(const uint32_t &tagEnum);
 };
 
 

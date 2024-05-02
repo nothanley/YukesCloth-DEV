@@ -2,6 +2,7 @@
 #include "YukesCloth"
 #include <Encoder/Import/SimMeshJson.h>
 #include <iostream>
+#include "Container/clothfile.h"
 
 int main()
 {
@@ -16,3 +17,5 @@ int main()
 
     //CJsonSimMesh jsonMesh("C:\\Users\\wauke\\Desktop\\plane_source.jsim");
 }
+
+

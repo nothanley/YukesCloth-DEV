@@ -6,7 +6,6 @@
 
 using namespace BinaryIO;
 
-
 void
 yclutils::debugPrintFloats(std::vector<Vector4>* floatArray) {
 	std::string filePath = "";
@@ -33,8 +32,9 @@ yclutils::hasIndex(const std::vector<int>& vec, int target){
 	return it != vec.end();
 }
 
-std::string
-yclutils::GetNodeName(const uint32_t& tagEnum){
+const std::string
+yclutils::GetNodeName(const uint32_t& tagEnum)
+{
     if (tagEnum > 57)
         return "";
 

@@ -1,5 +1,5 @@
 #include <Cloth/ClothStructs.h>
-#include <Cloth/SimObj.h>
+#include <CGameCloth.h>
 #include <Encoder/ClothSave.h>
-#include <Container/ClothContainer.h>
+#include "Container/clothfile.h"
 #pragma once

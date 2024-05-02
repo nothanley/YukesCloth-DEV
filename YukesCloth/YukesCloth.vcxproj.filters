@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Cloth">
       <UniqueIdentifier>{23a34dc8-4495-4d08-bee1-da439a88823d}</UniqueIdentifier>
     </Filter>
@@ -18,90 +10,151 @@
     <Filter Include="Encoder">
       <UniqueIdentifier>{6e87240c-928d-41e0-b0ee-3519ff0f73e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Cloth\Types">
-      <UniqueIdentifier>{8fd5a551-8550-453f-a0cd-a8f59f43d3dd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Encoder\Import">
       <UniqueIdentifier>{3995e0b5-d8e5-4e77-8f52-c8cefe41b938}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Cloth\MAIN_STRUCT_RENAME THIS">
-      <UniqueIdentifier>{7dbfe925-2b12-4069-a438-cd61994f9f27}</UniqueIdentifier>
+    <Filter Include="CLI">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Cloth\SimMesh">
+      <UniqueIdentifier>{755418ea-be45-44c2-b3bb-0c5dc0375844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cloth\SimMesh\Headers">
+      <UniqueIdentifier>{dc963a28-5233-4167-b370-60f3c8220fae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cloth\SimMesh\Source">
+      <UniqueIdentifier>{9527d85c-407e-4184-886a-7434ff627577}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>CLI</Filter>
     </ClCompile>
     <ClCompile Include="include\BinaryIO.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Include</Filter>
     </ClCompile>
-    <ClCompile Include="src\Container\ClothContainer.cpp">
+    <ClCompile Include="src\Container\clothfile.cpp">
       <Filter>Container</Filter>
     </ClCompile>
-    <ClCompile Include="src\Encoder\ClothSave.cpp">
+    <ClCompile Include="src\Encoder\clothsave.cpp">
       <Filter>Encoder</Filter>
     </ClCompile>
-    <ClCompile Include="src\Encoder\ClothEncoder.cpp">
+    <ClCompile Include="src\Encoder\clothencoder.cpp">
       <Filter>Encoder</Filter>
     </ClCompile>
-    <ClCompile Include="src\Cloth\Mesh\SimSubObj_RCN.cpp">
-      <Filter>Cloth\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Encoder\Import\SimMeshJson.cpp">
+    <ClCompile Include="src\Encoder\Import\simmeshjson.cpp">
       <Filter>Encoder\Import</Filter>
     </ClCompile>
-    <ClCompile Include="CGameCloth.cpp">
-      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cloth\SimMesh.cpp">
-      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cloth\SimObj.cpp">
-      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cloth\ClothStructs.cpp">
+    <ClCompile Include="src\Cloth\clothstructs.cpp">
       <Filter>Container</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\Mesh\simmesh_obj.cpp">
+      <Filter>Cloth\SimMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\Mesh\simmesh_pattern.cpp">
+      <Filter>Cloth\SimMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\Mesh\simmesh_skin.cpp">
+      <Filter>Cloth\SimMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\Mesh\simmesh_col.cpp">
+      <Filter>Cloth\SimMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\Mesh\simmesh_constraint.cpp">
+      <Filter>Cloth\SimMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\Mesh\simmesh_def.cpp">
+      <Filter>Cloth\SimMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\Mesh\simmesh_rcn.cpp">
+      <Filter>Cloth\SimMesh\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\cgamecloth.cpp">
+      <Filter>Cloth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\csimmesh.cpp">
+      <Filter>Cloth</Filter>
+    </ClCompile>
+    <ClCompile Include="include\common.cpp">
+      <Filter>Include</Filter>
+    </ClCompile>
+    <ClCompile Include="include\hash.cpp">
+      <Filter>Include</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BinaryIO.h">
-      <Filter>Header Files</Filter>
+      <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="src\Container\ClothContainer.h">
+    <ClInclude Include="src\Container\clothfile.h">
       <Filter>Container</Filter>
     </ClInclude>
-    <ClInclude Include="src\Encoder\ClothEncoder.h">
+    <ClInclude Include="src\Encoder\clothencoder.h">
       <Filter>Encoder</Filter>
     </ClInclude>
-    <ClInclude Include="src\Encoder\ClothSave.h">
+    <ClInclude Include="src\Encoder\clothsave.h">
       <Filter>Encoder</Filter>
     </ClInclude>
-    <ClInclude Include="src\Cloth\Mesh\SimSubObj_RCN.h">
-      <Filter>Cloth\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Encoder\Import\SimMeshJson.h">
+    <ClInclude Include="src\Encoder\Import\simmeshjson.h">
       <Filter>Encoder\Import</Filter>
     </ClInclude>
     <ClInclude Include="include\Json.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="CGameCloth.h">
-      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Cloth\SimMesh.h">
-      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Cloth\SimObj.h">
-      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Cloth\ClothStructs.h">
+    <ClInclude Include="src\Cloth\clothstructs.h">
       <Filter>Container</Filter>
     </ClInclude>
-    <ClInclude Include="cloth_tags.h">
-      <Filter>Cloth\MAIN_STRUCT_RENAME THIS</Filter>
+    <ClInclude Include="src\Cloth\Mesh\simmesh_def.h">
+      <Filter>Cloth\SimMesh\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\Mesh\simmesh_obj.h">
+      <Filter>Cloth\SimMesh\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\Mesh\simmesh_pattern.h">
+      <Filter>Cloth\SimMesh\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\Mesh\simmesh_skin.h">
+      <Filter>Cloth\SimMesh\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\Mesh\simmesh_col.h">
+      <Filter>Cloth\SimMesh\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\Mesh\simmesh_constraint.h">
+      <Filter>Cloth\SimMesh\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\Mesh\simmesh_rcn.h">
+      <Filter>Cloth\SimMesh\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\cgamecloth.h">
+      <Filter>Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cloth_tags.h">
+      <Filter>Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cloth\csimmesh.h">
+      <Filter>Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="src\memoryreader.h">
+      <Filter>Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="include\common.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hash.h">
+      <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="YukesCloth" />
+    <None Include="YukesSimMesh">
+      <Filter>Include</Filter>
+    </None>
+    <None Include="YukesCloth">
+      <Filter>Include</Filter>
+    </None>
   </ItemGroup>
 </Project>
