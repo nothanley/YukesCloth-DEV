@@ -214,6 +214,9 @@ CClothEncoder::encodeTag(TagBuffer* pTagBuf)
 		case enTagType_ColIDInfo:
 			m_colHandler->encodeColIdInfo(pTagBuf);
 			break;
+		case enTagType_SimMesh_Collection:
+			//todo
+			break;
 		default:
 			std::cerr << "Could not resolve encode format for tag type: " << pTag->eType << ". Skipping node..." << endl;
 			pTagBuf->bUsePreDef = true;
