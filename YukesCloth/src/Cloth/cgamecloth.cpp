@@ -55,7 +55,8 @@ void CGameCloth::load()
 
 void CGameCloth::updateStrings()
 {
-	for (auto child : m_pStHead->children) {
+	for (auto child : m_pStHead->children) 
+	{
 		uint32_t type = child->eType;
 
 		if (type == enTagType_SimMesh) {
@@ -132,6 +133,9 @@ void CGameCloth::initTag(StTag* tag)
 #endif
 
 	switch (tag->eType) {
+		case enTagType_SimMesh_Collection:
+			this->game_format = YUKES_CLOTH_24;
+			break;
 		case enTagType_SimMesh:
 			m_defHandler->loadSimMesh(*tag);
 			break;
@@ -155,7 +159,7 @@ void CGameCloth::initTag(StTag* tag)
 			m_rcnHandler->loadRecalcNormals(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_Skin: // todo: look this over for 2024 format
-			//m_skinHandler->GetSkinData(*tag.pSimMesh);
+			m_skinHandler->loadSkinData(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_SimLinkSrc:
 			m_subobjHandler->Link_DefineSourceMesh(*tag->pSimMesh);
@@ -167,7 +171,7 @@ void CGameCloth::initTag(StTag* tag)
 			m_patternHandler->loadSimMeshStacks(*tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_SkinCalc:
-			//CSimMeshData::GetSkinCalc(*tag.pSimMesh,this);
+			m_skinHandler->loadSkinCalc(*tag->pSimMesh); //
 			break;
 		case enTagType_SimMesh_SkinPaste:
 			m_skinHandler->loadSkinPaste(*tag->pSimMesh);
@@ -211,8 +215,8 @@ void CGameCloth::initTag(StTag* tag)
 			if (!m_nodeTable.empty()) { break; }
 			m_defHandler->loadNodeTable();
 			break;
-		case enTagType_SimMesh_SimLinkTar: // todo: stream type unk 2024
-			//CSimMeshData::GetLinkTar(*tag.pSimMesh,this);
+		case enTagType_SimMesh_SimLinkTar:
+			m_subobjHandler->loadLinkTar(*tag->pSimMesh);
 			break;
 		case enTagType_ColIDTbl:
 			m_colHandler->loadColIDTbl();

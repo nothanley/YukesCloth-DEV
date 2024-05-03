@@ -1,6 +1,4 @@
 #include "BinaryIO.h"
-#pragma once
-
 using namespace BinaryIO;
 
 #define u8  ReadUInt8(m_data)

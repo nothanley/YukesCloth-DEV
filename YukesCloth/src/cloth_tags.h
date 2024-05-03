@@ -56,6 +56,7 @@ enum {
     enTagType_SimMesh_Friction = 0x35,
     enTagType_SimMesh_CtLinkFixationST = 0x36,
     enTagType_SimMesh_CtEdgeLength = 0x37,
-    enTagType_SimMesh_BendingStiffness = 0x38
+    enTagType_SimMesh_BendingStiffness = 0x38,
+    enTagType_SimMesh_Collection = 0x3E,
 };
 

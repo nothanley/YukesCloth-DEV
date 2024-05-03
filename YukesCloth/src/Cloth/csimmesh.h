@@ -6,6 +6,12 @@
 
 class CGameCloth;
 
+enum GAME_TARGET {
+    YUKES_CLOTH_22,
+    YUKES_CLOTH_23,
+    YUKES_CLOTH_24,
+};
+
 class CSimObj
 {
 public:
@@ -31,6 +37,7 @@ public:
     void loadStringTable();
     std::string loadString();
     uintptr_t pos = std::ios::beg;
+    int game_format = YUKES_CLOTH_23;
    
 protected:
     std::vector<std::string> m_stringTable;

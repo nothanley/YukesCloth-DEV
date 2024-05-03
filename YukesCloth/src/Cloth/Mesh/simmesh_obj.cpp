@@ -74,8 +74,68 @@ StSimMesh* CSimMeshSubObj::GetMeshSourceObj(const std::string& meshName)
 }
 
 
+void CSimMeshSubObj::loadLinkTar_2024(StSimMesh& sLine) // using 2k24 format
+{
+	LinkTarget meshTarget;
+	meshTarget.source = m_pSimObj->getString(u32);
+
+	StSimMesh* pSourceMesh = GetMeshSourceObj(meshTarget.source);
+	if (!pSourceMesh) {
+		throw("\nCould not locate source mesh for target: %s", sLine.sObjName);
+	}
+
+	if (sLine.skin.vertices.empty())
+		sLine.skin.vertices.resize(sLine.sSimVtxCount);
+
+	uint32_t numIdxs = u32;
+	uint32_t paletteSize = u32;
+	meshTarget.totalWeights = u32;
+	m_data = (char*)(m_pSimObj->pos + 0x20);
+
+	/* Index and create a table of every used source edge from the sim mesh */
+	for (uint32_t i = 0; i < numIdxs; i++) {
+		int index = u32;
+		Triangle srcTriangle = pSourceMesh->sourceEdges.at(index);
+
+		meshTarget.sourceTris.push_back(srcTriangle);
+		meshTarget.indices.push_back(index);
+	}
+
+	/* Index and create a table of all vertex coords for the target mesh */
+	for (uint32_t i = 0; i < paletteSize; i++) {
+		int index = u32;
+		Vector4 vertexMat = sLine.skin.vertices.at(index);
+
+		meshTarget.vertexTable.push_back(vertexMat);
+		meshTarget.palette.push_back(index);
+	}
+
+	/* Iterate and define the influence of the source triangle on the specified vertex */
+	for (uint32_t i = 0; i < paletteSize; i++) {
+		MeshWeight blendWeight;
+		for (int j = 0; j < meshTarget.totalWeights; j++) {
+			blendWeight.numWeights = u16;
+			int srcIndex = u16;
+			float influence = f32;
+
+			blendWeight.indices.push_back(srcIndex);
+			blendWeight.weights.push_back(influence);
+
+		}
+
+		meshTarget.weights.push_back(blendWeight);
+	}
+
+	sLine.target = meshTarget;
+}
+
 void CSimMeshSubObj::loadLinkTar(StSimMesh& sLine)
 {
+	if (m_pSimObj->game_format == YUKES_CLOTH_24) {
+		this->loadLinkTar_2024(sLine);
+		return;
+	}
+
 	LinkTarget meshTarget;
 	meshTarget.source = ReadString(m_data, 0x80);
 	m_data = (char*)m_pSimObj->pos + 0x8C;
@@ -102,7 +162,7 @@ void CSimMeshSubObj::loadLinkTar(StSimMesh& sLine)
 	/* Index and create a table of all vertex coords for the target mesh */
 	for (uint32_t i = 0; i < paletteSize; i++) {
 		int index = u32;
-		Vector4 vertexMat = sLine.skin.matrices.at(index);
+		Vector4 vertexMat = sLine.skin.vertices.at(index);
 
 		meshTarget.vertexTable.push_back(vertexMat);
 		meshTarget.palette.push_back(index);

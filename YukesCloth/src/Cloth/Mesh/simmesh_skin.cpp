@@ -22,13 +22,13 @@ void CSimMeshSkin::loadSkinData(StSimMesh& sMesh)
 	/* Get vertex coordinates */
 	for (int i = 0; i < numVerts; i++) {
 		Vector4 vertex{ f32, f32, f32, f32 };
-		sMesh.skin.matrices.push_back(vertex);
+		sMesh.skin.vertices.push_back(vertex);
 	}
 
 	/* Get vertex normals */
 	for (int i = 0; i < numVerts; i++) {
 		Vector4 normal{ f32, f32, f32, f32 };
-		sMesh.skin.attributes.push_back(normal);
+		sMesh.skin.normals.push_back(normal);
 	}
 	uintptr_t skinBufferAddress = (uintptr_t)m_data;
 
@@ -68,10 +68,13 @@ void CSimMeshSkin::loadSkinCalc(StSimMesh& sMesh)
 	uint32_t numSkinVerts = u32;
 	m_data = (char*)m_pSimObj->pos + 0x10;
 
+	if (sMesh.skin.vertices.empty())
+		sMesh.skin.vertices.resize( sMesh.sSimVtxCount );
+
 	for (int i = 0; i < numSkinVerts; i++)
 	{
 		uint32_t vertIdx = u32;
-		Vector4 skinMatrix = sMesh.skin.matrices.at(vertIdx);
+		Vector4 skinMatrix = sMesh.skin.vertices.at(vertIdx);
 		sMesh.skinCalc.push_back(skinMatrix);
 
 #ifdef DEBUG_EDITOR

@@ -14,6 +14,7 @@ public:
     void AssignSimVtx(StSimMesh& sMesh);
     void SaveOldVtxs(StSimMesh& sMesh);
     void loadLinkTar(StSimMesh& sLine);
+    void loadLinkTar_2024(StSimMesh& sLine);
     void Link_DefineSourceMesh(StSimMesh& sMesh);
 
 private:

@@ -161,8 +161,8 @@ CJsonSimMesh::Load_SkinVerts(StSimMesh* sMesh) {
         Vector4 vertex{ vMat[0], vMat[1], vMat[2], 1.0 };
         Vector4 normal{ vNrm[0], vNrm[1], vNrm[2], 0.0 };
 
-        sMesh->skin.matrices.push_back(vertex);
-        sMesh->skin.attributes.push_back(normal);
+        sMesh->skin.vertices.push_back(vertex);
+        sMesh->skin.normals.push_back(normal);
     }
 }
 
@@ -284,7 +284,7 @@ CJsonSimMesh::Load_SkinCalc(StTag* pTagParent) {
     std::vector<uint32_t> sJsonVerts = m_Json["Mesh"]["SkinCalc"];
 
     for (auto& vtxIndex : sJsonVerts) {
-        Vector4 skinMatrix = sMesh->skin.matrices.at(vtxIndex);
+        Vector4 skinMatrix = sMesh->skin.vertices.at(vtxIndex);
         sMesh->skinCalc.push_back(skinMatrix);
     }
 

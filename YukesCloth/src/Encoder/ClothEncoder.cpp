@@ -365,14 +365,14 @@ GetNodePalette(MeshSkin& skin, CSimObj* pSimObj, int& numWeights)
 void
 WriteNodeSkinMatrices(TagBuffer* pTagBuf, MeshSkin& skin) {
 
-	for (auto& matrix : skin.matrices) {
+	for (auto& matrix : skin.vertices) {
 		WriteFloat(pTagBuf->binary, matrix.x);
 		WriteFloat(pTagBuf->binary, matrix.y);
 		WriteFloat(pTagBuf->binary, matrix.z);
 		WriteFloat(pTagBuf->binary, matrix.w);
 	}
 
-	for (auto& weight : skin.attributes) {
+	for (auto& weight : skin.normals) {
 		WriteFloat(pTagBuf->binary, weight.x);
 		WriteFloat(pTagBuf->binary, weight.y);
 		WriteFloat(pTagBuf->binary, weight.z);
@@ -626,9 +626,9 @@ CClothEncoder::EncodeStacks(TagBuffer* pTagBuf) {
 int
 FindMatrixIndex(StSimMesh* pSimMesh, const Vector4& target) {
 
-	int numMatrices = pSimMesh->skin.matrices.size();
+	int numMatrices = pSimMesh->skin.vertices.size();
 	for (int i = 0; i < numMatrices; i++) {
-		Vector4 skinVtx = pSimMesh->skin.matrices.at(i);
+		Vector4 skinVtx = pSimMesh->skin.vertices.at(i);
 		bool isMatching = false;
 
 		if (skinVtx == target) 

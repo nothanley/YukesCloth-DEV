@@ -7,7 +7,8 @@
 int main()
 {
     CClothContainer yclfile(
-        "C:\\Users\\wauke\\Desktop\\hair_00170-24.ycl");
+        //"C:\\Users\\wauke\\Desktop\\hair_00170-24.ycl");
+        "C:\\Users\\wauke\\Desktop\\1031_Attire.ycl");
 
     yclfile.open();
 
