@@ -133,6 +133,7 @@ void CGameCloth::initTag(StTag* tag)
 	switch (tag->eType) {
 		case enTagType_SimMesh_Collection:
 			this->game_format = YUKES_CLOTH_24;
+			m_subobjHandler->loadCollection(*tag);
 			break;
 		case enTagType_SimMesh:
 			m_defHandler->loadSimMesh(*tag);

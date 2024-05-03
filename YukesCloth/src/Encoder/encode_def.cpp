@@ -8,9 +8,7 @@ using namespace clothsrl;
 CSimEncodeDef::CSimEncodeDef(std::shared_ptr<CSimObj> obj, std::ofstream*& data) :
 	m_pSimObj(obj),
 	m_data(data)
-{
-	printf("");
-}
+{}
 
 void CSimEncodeDef::encodeSimMesh(TagBuffer* pTagBuf) 
 {

@@ -188,8 +188,8 @@ void CSimMeshSubObj::loadLinkTar(StSimMesh& sLine)
 }
 
 
-void
-CSimMeshSubObj::Link_DefineSourceMesh(StSimMesh& sMesh) {
+void CSimMeshSubObj::Link_DefineSourceMesh(StSimMesh& sMesh)
+{
 	uint32_t numTriangles = u32;
 
 	m_data = (char*)m_pSimObj->pos + 0x20;
@@ -201,3 +201,11 @@ CSimMeshSubObj::Link_DefineSourceMesh(StSimMesh& sMesh) {
 
 }
 
+void CSimMeshSubObj::loadCollection(StTag& tag)
+{
+	uint32_t numChildren = u32;
+	uint32_t numUnk2 = u32;
+	uint32_t numVerts = u32;
+
+
+}

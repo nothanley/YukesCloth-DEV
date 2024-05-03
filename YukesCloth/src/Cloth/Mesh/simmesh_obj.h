@@ -9,6 +9,7 @@ public:
     CSimMeshSubObj(CSimObj* obj, char*& data);
 
 public:
+    void loadCollection(StTag& sMesh);
     void AssignSubObj(StSimMesh& sMesh);
     void AssignSubObjVtx(StSimMesh& sMesh);
     void AssignSimVtx(StSimMesh& sMesh);
