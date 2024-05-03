@@ -31,7 +31,7 @@ void CClothContainer::open()
 void CClothContainer::ReadContents() 
 {
 	printf("Opening File: %s\n", m_filePath.c_str());
-	m_pClothObj = std::make_unique<CGameCloth>(m_data);
+	m_pClothObj = std::make_shared<CGameCloth>(m_data);
 	m_pClothObj->load();
 }
 

@@ -7,10 +7,10 @@ class CClothSave
 {
 
 public:
-	CClothSave(const char* filePath, CSimObj* pSimObj);
+	CClothSave(const char* filePath, std::shared_ptr<CSimObj> pSimObj);
 
 public:
-	static void SaveToDisk(const char* filePath, CSimObj* pSimObj)
+	static void SaveToDisk(const char* filePath, std::shared_ptr<CSimObj> pSimObj)
 	{
 		CClothSave saveFile(filePath, pSimObj);
 	}
@@ -22,7 +22,7 @@ private:
 private:
 	std::string m_sFilePath;
 	std::ofstream* m_pDataStream = nullptr;
-	CSimObj* m_pSimObj = nullptr;
+	std::shared_ptr<CSimObj> m_pSimObj;
 
 
 };

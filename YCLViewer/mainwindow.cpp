@@ -4,8 +4,9 @@
 #include "nodeselectwindow.h"
 #include "treelabeldelegate.h"
 #include "clothjson.h"
-#include <Cloth/SimMesh.h>
+#include "YukesCloth"
 #include <Encoder/Import/SimMeshJson.h>
+#include "Encoder/clothsave.h"
 
 #ifdef DEBUG_EDITOR
 #include <QHBoxLayout>
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     QStringList appVersionList{ QString::number(MAJOR_VER), QString::number(MINOR_VER), QString::number(REVIS_VER) };
     QString versionString = appVersionList.join(".");
     this->setWindowTitle("YCL Editor v" + appVersionList.join(".") );
+    this->m_clothObj = nullptr;
     ui->versionLabel->setText("v" + versionString);
 
 #ifdef DEBUG_EDITOR
@@ -84,8 +86,7 @@ MainWindow::on_OpenFile_clicked()
     OpenYukesClothFile(m_sYclFilePath);
 }
 
-void
-GetNodeCount(const uint32_t& target, StTag* pNode, uint32_t& totalNodes ){
+static const void GetNodeCount(const uint32_t& target, const StTag* pNode, uint32_t& totalNodes ){
     if (pNode->eType == target)
         totalNodes++;
 
@@ -101,7 +102,7 @@ MainWindow::UpdateStatLabels(){
     uint32_t numLines = 0;
     uint32_t numCols = 0;
 
-    StTag* pRootNode = m_pYclFile->m_pClothSimObj->m_pStHead;
+    const StTag* pRootNode = m_clothObj->getRootTag();
     GetNodeCount(enTagType_SimMesh, pRootNode, numMeshes);
     GetNodeCount(enTagType_SimLine, pRootNode, numLines);
     GetNodeCount(enTagType_Capsule_Standard, pRootNode, numCols);
@@ -118,34 +119,36 @@ MainWindow::UpdateStatLabels(){
 void
 MainWindow::OpenYukesClothFile(const QString& filePath){
     m_sYclFilePath = filePath;
-    CClothContainer* yclObj;
+    CClothContainer* clothFile;
 
     try{
-        yclObj = new CClothContainer(filePath.toStdString().c_str());}
+        clothFile = new CClothContainer(filePath.toStdString().c_str());
+        clothFile->open();
+    }
     catch(...){
-        m_pYclFile = nullptr;
         QMessageBox::warning(this,"Load Error","Cannot load invalid .ycl file.");
         return;
     }
 
-    this->m_pYclFile = yclObj;
-    StTag* pRootNode = m_pYclFile->m_pClothSimObj->m_pStHead;
+    m_clothObj = clothFile->getClothObj();
+    const StTag* pRootNode = m_clothObj->getRootTag();
     PopulateTreeWidget(pRootNode);
     UpdateStatLabels();
 }
 
 void
 MainWindow::OpenAppDataYCLFile(const QString& filePath){
-    CClothContainer* yclObj;
+    CClothContainer* clothFile;
     try{
-        yclObj = new CClothContainer(filePath.toStdString().c_str());}
+        clothFile = new CClothContainer(filePath.toStdString().c_str());
+        clothFile->open();
+    }
     catch(...){
-        m_pYclFile = nullptr;
         return;
     }
 
-    this->m_pYclFile = yclObj;
-    StTag* pRootNode = m_pYclFile->m_pClothSimObj->m_pStHead;
+    m_clothObj = clothFile->getClothObj();
+    const StTag* pRootNode = m_clothObj->getRootTag();
     PopulateTreeWidget(pRootNode);
     UpdateStatLabels();
 }
@@ -157,7 +160,7 @@ MainWindow::on_actionOpen_ycl_file_triggered()
 }
 
 void
-MainWindow::PopulateTreeWidget(StTag* pRootNode){
+MainWindow::PopulateTreeWidget(const StTag* pRootNode){
     ui->treeWidget->clear();
 
     for (const auto child : pRootNode->children)
@@ -390,11 +393,11 @@ MainWindow::on_actionExit_triggered()
 void
 MainWindow::on_SaveButton_clicked()
 {
-    if (!this->m_pYclFile){
+    if (!this->m_clothObj){
         QMessageBox::warning(this,"File Error", "Please load .ycl to save contents.");
         return; }
 
-    if (m_pYclFile->m_pClothSimObj->m_pStHead->children.size() == 0){
+    if (m_clothObj->getRootTag()->children.size() == 0){
         QMessageBox::warning(this,"File Error", "YCL is missing a tag hierarchy.");
         return;}
 
@@ -405,7 +408,7 @@ MainWindow::on_SaveButton_clicked()
     if (!savePath.endsWith(".ycl"))
         savePath += ".ycl";
 
-    CClothSave::SaveToDisk(savePath.toStdString().c_str(), m_pYclFile->m_pClothSimObj);
+    CClothSave::SaveToDisk(savePath.toStdString().c_str(), m_clothObj.get());
     QMessageBox::information(this,"Save Complete", "File saved to: " + savePath);
 }
 
@@ -422,8 +425,7 @@ MainWindow::ClearSelectionWindow()
     this->m_pSelectionWindow = nullptr;
 }
 
-void AddStringToVector(std::vector<std::string>& vec,
-                          const std::string& target) {
+static void AddStringToVector(std::vector<std::string>& vec, const std::string& target) {
     for (const auto& str : vec)
         if (str == target) return;
 
@@ -448,7 +450,7 @@ FindNodeIndex(const SimNode& sTarget, std::vector<SimNode> nodeTable)
 int
 MainWindow::GetTagIndex_SimMesh(StTag* pTag){
     StSimMesh* pDestMesh = pTag->pSimMesh;
-    StTag* sceneRoot = m_pYclFile->m_pClothSimObj->m_pStHead;
+    const StTag* sceneRoot = m_clothObj->getRootTag();
 
     for (int i = 0; i < sceneRoot->children.size(); i++)
     {
@@ -482,8 +484,8 @@ isMissingSourceMesh(StSimMesh* pSimMesh, StTag* pTagHead){
 }
 
 bool
-MainWindow::AddNodeToTreeTag(StTag* newTag){
-    CSimObj* pSimObj = m_pYclFile->m_pClothSimObj;
+MainWindow::AddNodeToTreeTag(StTag* newTag)
+{
     if (!newTag->pSimMesh) return false;
 
     /* Verify target mesh isn't already pre-existing */
@@ -501,21 +503,18 @@ MainWindow::AddNodeToTreeTag(StTag* newTag){
     /* Append to node palette if doesn't exists */
     for (auto& node : pSimMesh->skin.nodePalette)
     {
-        int nodeIdx = FindNodeIndex(node,pSimObj->m_NodeTable);
+        int nodeIdx = FindNodeIndex(node, m_clothObj->getNodes());
         if (nodeIdx == -1)
-            pSimObj->m_NodeTable.push_back(node);
+            m_clothObj->addNode(node);
     }
 
     /* Append mesh names to string table */
-    AddStringToVector(pSimObj->m_sStringTable,newTag->pSimMesh->sModelName);
-    AddStringToVector(pSimObj->m_sStringTable,newTag->pSimMesh->sObjName);
-
-    /* Add node to parent children */
-    std::vector<StTag*>& children = pSimObj->m_pStHead->children;
-    children.insert(children.begin(), newTag);
+    m_clothObj->addString( newTag->pSimMesh->sModelName );
+    m_clothObj->addString( newTag->pSimMesh->sObjName );
+    m_clothObj->addRootChild(newTag); /* Add node to parent children */
 
     /* Reload Hierarchy */
-    PopulateTreeWidget(m_pYclFile->m_pClothSimObj->m_pStHead);
+    PopulateTreeWidget(m_clothObj->getRootTag());
     UpdateStatLabels();
     return true;
 }
@@ -523,8 +522,8 @@ MainWindow::AddNodeToTreeTag(StTag* newTag){
 void
 MainWindow::on_addnodebutton_clicked()
 {
-    if (this->m_pSelectionWindow || !m_pYclFile) return;
-    StTag* pUserTag = m_pYclFile->m_pClothSimObj->m_pStHead;
+    if (this->m_pSelectionWindow || !m_clothObj) return;
+    const StTag* pUserTag = m_clothObj->getRootTag();
     if (!pUserTag) return;
 
     /* Get source file path */
@@ -535,9 +534,9 @@ MainWindow::on_addnodebutton_clicked()
 
 
     try{
-        CClothContainer sourceYCL(sourceFile.toStdString().c_str());
-        this->m_pSelectionWindow = new NodeSelectWindow( sourceYCL.m_pClothSimObj,pUserTag,
-                                                         this, sourceFile.toStdString().c_str() );
+        CClothContainer yclFile(sourceFile.toStdString().c_str());
+        yclFile.open();
+        this->m_pSelectionWindow = new NodeSelectWindow( yclFile.getClothObj(), pUserTag, this, sourceFile.toStdString().c_str() );
         m_pSelectionWindow->show();
     }
     catch(...){
@@ -577,7 +576,7 @@ MainWindow::on_removenodebutton_clicked()
     delete pSourceTag; /* todo: delete all children */
 
     /* Reload Hierarchy */
-    PopulateTreeWidget(m_pYclFile->m_pClothSimObj->m_pStHead);
+    PopulateTreeWidget(m_clothObj->getRootTag());
     UpdateStatLabels();
 }
 
@@ -670,7 +669,7 @@ MainWindow::on_actionExpand_Collapse_All_triggered()
 void
 MainWindow::on_actionExportItemAsJson_triggered()
 {
-    if (this->m_pSelectionWindow || !m_pYclFile) return;
+    if (this->m_pSelectionWindow || !m_clothObj) return;
     QTreeWidgetItem* pTreeItem = ui->treeWidget->currentItem();
     DefWidgetItem* pDefItem = (DefWidgetItem*)pTreeItem;
 
@@ -689,7 +688,7 @@ MainWindow::on_actionExportItemAsJson_triggered()
 void
 MainWindow::on_actionImport_Custom_Constraints_triggered()
 {
-    if (this->m_pSelectionWindow || !m_pYclFile) return;
+    if (this->m_pSelectionWindow || !m_clothObj) return;
     QTreeWidgetItem* pTreeItem = ui->treeWidget->currentItem();
     DefWidgetItem* pDefItem = (DefWidgetItem*)pTreeItem;
 
@@ -724,11 +723,11 @@ MainWindow::on_actionSave_triggered()
     bool isSaveReady = false;
     CreateSaveOverwritePrompt(m_sYclFilePath,&isSaveReady);
     if (!isSaveReady)   return;
-    if (m_pYclFile->m_pClothSimObj->m_pStHead->children.size() == 0){
+    if (m_clothObj->getRootTag()->children.size() == 0){
         QMessageBox::warning(this,"File Error", "YCL is missing a tag hierarchy.");
         return;}
 
-    CClothSave::SaveToDisk(m_sYclFilePath.toStdString().c_str(), m_pYclFile->m_pClothSimObj);
+    CClothSave::SaveToDisk(m_sYclFilePath.toStdString().c_str(), m_clothObj.get());
     QMessageBox::information(this,"Save Complete", "File saved to: " + m_sYclFilePath);
 }
 
@@ -762,7 +761,7 @@ sortJsimFiles(QStringList files) {
 void
 MainWindow::on_CreateButton_clicked()
 {
-    if (this->m_pSelectionWindow || !m_pYclFile) return;
+    if (this->m_pSelectionWindow || !m_clothObj) return;
     QStringList sourceFiles = QFileDialog::getOpenFileNames(this, tr("Open .jsim file"),
                                                          this->m_sExplorerPath,
                                                          tr("JSIM (*.jsim)") );
@@ -803,7 +802,7 @@ void
 MainWindow::ReloadTempFile(){
     QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 
-    if (m_pYclFile->m_pClothSimObj->m_pStHead->children.size() == 0)
+    if (m_clothObj->getRootTag()->children.size() == 0)
         throw("Cannot save empty ycl file.");
 
     QDir dir(appDataPath);
@@ -811,10 +810,10 @@ MainWindow::ReloadTempFile(){
         throw("Failed to write contents.");
 
     QString tempFile = appDataPath + "/editor_temp.ycl";
-    CClothSave::SaveToDisk(tempFile.toStdString().c_str(), m_pYclFile->m_pClothSimObj);
+    CClothSave::SaveToDisk(tempFile.toStdString().c_str(), m_clothObj.get());
     OpenAppDataYCLFile(tempFile);
 
-    if (m_pYclFile == nullptr)
+    if (m_clothObj == nullptr)
         throw("Failed to write contents.");
 }
 
@@ -822,8 +821,10 @@ MainWindow::ReloadTempFile(){
 void
 MainWindow::ClearAllData(){
     m_sYclFilePath = "";
-    if (m_pYclFile) delete m_pYclFile;
-    m_pYclFile = nullptr;
+    if (m_clothObj){
+        m_clothObj->CGameCloth::~CGameCloth();
+        m_clothObj = nullptr;
+    }
 
     if (m_pSelectionWindow){
         m_pSelectionWindow->close(); }
@@ -845,8 +846,7 @@ MainWindow::on_actionClear_File_triggered()
     ClearAllData();
 }
 
-bool
-HasSimLinkTarget(StSimMesh* pMesh, StTag* pTag)
+bool HasSimLinkTarget(StSimMesh* pMesh, const StTag* pTag)
 {
    for (auto& child : pTag->children){
        StSimMesh* pTreeMesh = child->pSimMesh;
@@ -863,8 +863,8 @@ HasSimLinkTarget(StSimMesh* pMesh, StTag* pTag)
 void
 MainWindow::ValidateLinks()
 {
-   if (!m_pYclFile) return;
-   StTag* pTagHead = m_pYclFile->m_pClothSimObj->m_pStHead;
+   if (!m_clothObj) return;
+   const StTag* pTagHead = m_clothObj->getRootTag();
 
    for (int i = 0; i < pTagHead->children.size(); i++)
    {

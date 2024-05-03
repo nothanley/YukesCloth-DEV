@@ -3,13 +3,12 @@
 #include "Encoder/ClothEncoder.h"
 using namespace std;
 
-CClothSave::CClothSave(const char* filePath, CSimObj* pSimObj) {
+CClothSave::CClothSave(const char* filePath, std::shared_ptr<CSimObj> pSimObj) {
 	m_sFilePath = filePath;
 	m_pSimObj = pSimObj;
 
-	bool saveOk = this->Save();
-	if (saveOk)
-		printf("\nAll Saving complete!");
+	if (this->Save())
+		printf("\nAll Saving complete.");
 }
 
 bool
@@ -21,7 +20,8 @@ CClothSave::Save() {
 
 	/* Converts and serializes simulation object into .ycl format.
 	   Writes all data to specified out stream */
-	CClothEncoder(m_pDataStream, m_pSimObj);
+	CClothEncoder encoder(m_pDataStream, m_pSimObj);
+	encoder.save();
     m_pDataStream->close();
 }
 

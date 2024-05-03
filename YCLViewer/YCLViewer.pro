@@ -9,22 +9,41 @@ DEFINES += DEBUG_CONSOLE
 
 TARGET = YclEditor
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-CONFIG += c++11
+CONFIG += c++17
+DEFINES += WIN32_LEAN_AND_MEAN
+DEFINES -= UNICODE
+DEFINES += _MBCS
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    $$PWD/../YukesCloth/src/Cloth/Mesh/SimSubObj_RCN.cpp \
-    $$PWD/../YukesCloth/src/Cloth/ClothStructs.cpp \
-    $$PWD/../YukesCloth/src/Cloth/SimMesh.cpp \
-    $$PWD/../YukesCloth/src/Cloth/SimObj.cpp \
-    $$PWD/../YukesCloth/src/Container/ClothContainer.cpp \
-    $$PWD/../YukesCloth/src/Encoder/ClothEncoder.cpp \
-    $$PWD/../YukesCloth/src/Encoder/ClothSave.cpp \
-    $$PWD/../YukesCloth/src/Encoder/Import/SimMeshJson.cpp \
     $$PWD/../YukesCloth/include/BinaryIO.cpp \
+    ../YukesCloth/include/common.cpp \
+    ../YukesCloth/include/hash.cpp \
+    ../YukesCloth/src/Cloth/Mesh/simmesh_col.cpp \
+    ../YukesCloth/src/Cloth/Mesh/simmesh_constraint.cpp \
+    ../YukesCloth/src/Cloth/Mesh/simmesh_def.cpp \
+    ../YukesCloth/src/Cloth/Mesh/simmesh_obj.cpp \
+    ../YukesCloth/src/Cloth/Mesh/simmesh_pattern.cpp \
+    ../YukesCloth/src/Cloth/Mesh/simmesh_rcn.cpp \
+    ../YukesCloth/src/Cloth/Mesh/simmesh_skin.cpp \
+    ../YukesCloth/src/Cloth/cgamecloth.cpp \
+    ../YukesCloth/src/Cloth/clothstructs.cpp \
+    ../YukesCloth/src/Cloth/csimmesh.cpp \
+    ../YukesCloth/src/Container/clothfile.cpp \
+    ../YukesCloth/src/Encoder/Import/simmeshjson.cpp \
+    ../YukesCloth/src/Encoder/clothencoder.cpp \
+    ../YukesCloth/src/Encoder/clothsave.cpp \
+    ../YukesCloth/src/Encoder/clothserial.cpp \
+    ../YukesCloth/src/Encoder/encode_col.cpp \
+    ../YukesCloth/src/Encoder/encode_constraint.cpp \
+    ../YukesCloth/src/Encoder/encode_def.cpp \
+    ../YukesCloth/src/Encoder/encode_obj.cpp \
+    ../YukesCloth/src/Encoder/encode_pattern.cpp \
+    ../YukesCloth/src/Encoder/encode_rcn.cpp \
+    ../YukesCloth/src/Encoder/encode_skin.cpp \
     clothjson.cpp \
     defwidgetitem.cpp \
     main.cpp \
@@ -33,16 +52,19 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/include/json.hpp \
-    $$PWD/../YukesCloth/src/Cloth/Mesh/SimSubObj_RCN.h \
-    $$PWD/../YukesCloth/src/Cloth/ClothStructs.h \
-    $$PWD/../YukesCloth/src/Cloth/SimMesh.h \
-    $$PWD/../YukesCloth/src/Cloth/SimObj.h \
-    $$PWD/../YukesCloth/src/Container/ClothContainer.h \
-    $$PWD/../YukesCloth/src/Encoder/ClothEncoder.h \
-    $$PWD/../YukesCloth/src/Encoder/ClothSave.h \
-    $$PWD/../YukesCloth/src/Encoder/Import/SimMeshJson.h \
     $$PWD/../YukesCloth/include/BinaryIO.h \
     $$PWD/../YukesCloth/YukesCloth \
+    ../YukesCloth/YukesSimMesh \
+    ../YukesCloth/include/common.h \
+    ../YukesCloth/include/hash.h \
+    ../YukesCloth/src/Encoder/clothserial.h \
+    ../YukesCloth/src/Encoder/encode_col.h \
+    ../YukesCloth/src/Encoder/encode_constraint.h \
+    ../YukesCloth/src/Encoder/encode_def.h \
+    ../YukesCloth/src/Encoder/encode_obj.h \
+    ../YukesCloth/src/Encoder/encode_pattern.h \
+    ../YukesCloth/src/Encoder/encode_rcn.h \
+    ../YukesCloth/src/Encoder/encode_skin.h \
     clothjson.h \
     defwidgetitem.h \
     mainwindow.h \
@@ -54,6 +76,9 @@ FORMS += \
 
 INCLUDEPATH += $$PWD/../YukesCloth
 INCLUDEPATH += $$PWD/../YukesCloth/src
+INCLUDEPATH += $$PWD/../YukesCloth/src/Cloth
+INCLUDEPATH += $$PWD/../YukesCloth/src/Encoder
+INCLUDEPATH += $$PWD/../YukesCloth/src/Cloth/Mesh
 INCLUDEPATH += $$PWD/../YukesCloth/include
 INCLUDEPATH += $$PWD/include
 

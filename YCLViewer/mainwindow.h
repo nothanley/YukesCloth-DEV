@@ -61,7 +61,7 @@ private:
     Ui::MainWindow *ui;
     void appendNodeToView(StTag *pSourceTag, DefWidgetItem* pParentItem);
     void UpdateStatLabels();
-    void PopulateTreeWidget(StTag* pRootNode);
+    void PopulateTreeWidget(const StTag *pRootNode);
     void PopulateTableWidget(StTag* pNode, QTableWidget *pTable);
     void AddContextMenuNodeSettings(QMenu &menu);
     void ReloadTempFile();
@@ -69,7 +69,7 @@ private:
 
 private:
     QString m_sYclFilePath;
-    CClothContainer* m_pYclFile = nullptr;
+    std::shared_ptr<CGameCloth> m_clothObj;
     NodeSelectWindow* m_pSelectionWindow = nullptr;
     QString m_sExplorerPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation); // Cache Explorer Directory
     bool isExpanded = false;

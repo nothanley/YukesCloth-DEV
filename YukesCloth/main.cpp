@@ -3,6 +3,7 @@
 #include <Encoder/Import/SimMeshJson.h>
 #include <iostream>
 #include "Container/clothfile.h"
+#include "clothsave.h"
 
 int main()
 {
@@ -12,9 +13,9 @@ int main()
 
     yclfile.open();
 
-    //CClothSave::SaveToDisk(
-        //"C:\\Users\\wauke\\Desktop\\out_file.ycl", 
-        //_yclContainer.m_pClothSimObj);
+    CClothSave::SaveToDisk(
+        "C:\\Users\\wauke\\Desktop\\out_file.ycl", 
+        yclfile.getClothObj() );
 
     //CJsonSimMesh jsonMesh("C:\\Users\\wauke\\Desktop\\plane_source.jsim");
 }

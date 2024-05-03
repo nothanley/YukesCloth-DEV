@@ -31,6 +31,8 @@ public:
     void setColId(const std::string& name) { this->m_colId = name; }
     void addCol(const CollisionVolume& col) { m_colTable.push_back(col); }
     void addNode(const SimNode& node) { m_nodeTable.push_back(node); }
+    void addRootChild(StTag* child_tag);
+    void addString(const std::string& target);
 
 public:
     virtual void initTag(StTag* tag) = 0;

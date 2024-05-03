@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG_CONSOLE;WIN32_LEAN_AND_MEAN;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)YukesCloth\src;$(SolutionDir)YukesCloth\include;$(SolutionDir)YukesCloth\src\Cloth\Mesh;$(SolutionDir)YukesCloth;$(SolutionDir)YukesCloth\src\Cloth;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)YukesCloth\src;$(SolutionDir)YukesCloth\include;$(SolutionDir)YukesCloth\src\Cloth\Mesh;$(SolutionDir)YukesCloth;$(SolutionDir)YukesCloth\src\Cloth;$(SolutionDir)YukesCloth\src\Encoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>$(SOLUTIONDIR)YukesCloth;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DEBUG_CONSOLE;WIN32_LEAN_AND_MEAN;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)YukesCloth\src;$(SolutionDir)YukesCloth\include;$(SolutionDir)YukesCloth\src\Cloth\Mesh;$(SolutionDir)YukesCloth;$(SolutionDir)YukesCloth\src\Cloth;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)YukesCloth\src;$(SolutionDir)YukesCloth\include;$(SolutionDir)YukesCloth\src\Cloth\Mesh;$(SolutionDir)YukesCloth;$(SolutionDir)YukesCloth\src\Cloth;$(SolutionDir)YukesCloth\src\Encoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>$(SOLUTIONDIR)YukesCloth;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -154,6 +154,14 @@
     <ClCompile Include="src\Container\clothfile.cpp" />
     <ClCompile Include="src\Encoder\clothencoder.cpp" />
     <ClCompile Include="src\Encoder\clothsave.cpp" />
+    <ClCompile Include="src\Encoder\clothserial.cpp" />
+    <ClCompile Include="src\Encoder\encode_col.cpp" />
+    <ClCompile Include="src\Encoder\encode_constraint.cpp" />
+    <ClCompile Include="src\Encoder\encode_def.cpp" />
+    <ClCompile Include="src\Encoder\encode_obj.cpp" />
+    <ClCompile Include="src\Encoder\encode_pattern.cpp" />
+    <ClCompile Include="src\Encoder\encode_rcn.cpp" />
+    <ClCompile Include="src\Encoder\encode_skin.cpp" />
     <ClCompile Include="src\Encoder\Import\simmeshjson.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +183,14 @@
     <ClInclude Include="src\Container\clothfile.h" />
     <ClInclude Include="src\Encoder\clothencoder.h" />
     <ClInclude Include="src\Encoder\clothsave.h" />
+    <ClInclude Include="src\Encoder\clothserial.h" />
+    <ClInclude Include="src\Encoder\encode_col.h" />
+    <ClInclude Include="src\Encoder\encode_constraint.h" />
+    <ClInclude Include="src\Encoder\encode_def.h" />
+    <ClInclude Include="src\Encoder\encode_obj.h" />
+    <ClInclude Include="src\Encoder\encode_pattern.h" />
+    <ClInclude Include="src\Encoder\encode_rcn.h" />
+    <ClInclude Include="src\Encoder\encode_skin.h" />
     <ClInclude Include="src\Encoder\Import\simmeshjson.h" />
     <ClInclude Include="src\memoryreader.h" />
   </ItemGroup>

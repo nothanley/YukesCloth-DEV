@@ -1,6 +1,7 @@
 #include <QDialog>
 #include <YukesCloth>
 #include <QListWidgetItem>
+#include <memory>
 #pragma once
 
 //class CSimObj;
@@ -15,7 +16,7 @@ class NodeSelectWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit NodeSelectWindow(CSimObj* pSimObject, StTag* pTargetTag, QWidget *parent = nullptr, const char* fileName = "");
+    explicit NodeSelectWindow(std::shared_ptr<CGameCloth>& pSimObject, const StTag* pTargetTag, QWidget *parent = nullptr, const char* fileName = "");
     ~NodeSelectWindow();
 
 Q_SIGNALS:
@@ -40,8 +41,8 @@ private:
     std::vector<QListWidgetItem*> GetAllSelectedMeshItems();
 
     Ui::NodeSelectWindow *ui;
-    CSimObj* pSimObj = nullptr;
-    StTag* m_pParentTag = nullptr;
+    std::shared_ptr<CGameCloth> m_clothObj;
+    const StTag* m_pParentTag = nullptr;
     std::vector<StTag*> m_tagPalette;
     std::string m_sFileName;
 };

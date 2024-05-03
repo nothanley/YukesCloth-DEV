@@ -1,67 +1,38 @@
-#include <fstream>
+#include "clothserial.h"
+#include "YukesSimMesh"
 #pragma once
-
-class StTag;
-class CSimObj;
-class TagBuffer;
 
 #define BINARY_ALIGNMENT 16
 
 class CClothEncoder
 {
-
 public:
-	CClothEncoder(std::ofstream* outStream, CSimObj* pSimObj);
+	CClothEncoder(std::ofstream* outStream, std::shared_ptr<CSimObj>& pSimObj);
+	void save();
 
 private:
-	void WriteTagHead(TagBuffer* pNode);
-	void WriteTree(TagBuffer* pRootNode);
-	void EncodeAllTags(TagBuffer* pRootNode);
-	void EncodeTag(TagBuffer* tag);
+	void setupHandles();
+	void initTagBuffers(TagBuffer* pTagBf);
+	void writeTagHead(TagBuffer* pNode);
+	void writeTree(TagBuffer* pRootNode);
+	void encodeAllTags(TagBuffer* pRootNode);
+	void encodeTag(TagBuffer* tag);
+	void encodeStringTable(TagBuffer* pTagBuf);
+	void encodeString(TagBuffer* pTagBuf);
+	uint32_t getTagTotalSize(TagBuffer* pTag);
 
 private:
-	void InitTagBuffers(TagBuffer* pTagBf);
-	void EncodeRootTag(TagBuffer* pTag);
-	void EncodeSimMesh(TagBuffer* pTag);
-	void EncodeSimVerts(TagBuffer* pTag);
-	void EncodeSubObj(TagBuffer* pTag);
-	void EncodeSubObjVerts(TagBuffer* pTag);
-	void EncodeRecalcNormals(TagBuffer* pTag);
-	void EncodeRCNData(TagBuffer* pTag);
-	void EncodeSimMeshSkin(TagBuffer* pTag);
-	void EncodeSimLinkSource(TagBuffer* pTag);
-	void EncodePatternEntry(TagBuffer* pTag);
-	void EncodeStacks(TagBuffer* pTag);
-	void EncodeSkinCalc(TagBuffer* pTag);
-	void EncodeSkinPaste(TagBuffer* pTag);
-	void EncodeVertexSave(TagBuffer* pTag);
-	void EncodeForceField(TagBuffer* pTag);
-	void EncodeConstraint_Stretch(TagBuffer* pTag);
-	void EncodeConstraint_Std(TagBuffer* pTag);
-	void EncodeConstraint_Bend(TagBuffer* pTag);
-	void EncodeBendStiffness(TagBuffer* pTag);
-	void EncodeColVerts(TagBuffer* pTag);
-	void EncodeConstraint_Fixation(TagBuffer* pTag);
-	void EncodeSimLine(TagBuffer* pTag);
-	void EncodeLineDef(TagBuffer* pTag);
-	void EncodeAssignNode(TagBuffer* pTag);
-	void EncodeLinkTar(TagBuffer* pTag);
-	void EncodeStringTable(TagBuffer* pTag);
-	void EncodeString(TagBuffer* pTag);
-	void EncodeNodeTable(TagBuffer* pTag);
-	void EncodeColIdTbl(TagBuffer* pTag);
-	void EncodeCols(TagBuffer* pTag);
-	void EncodeColPack(TagBuffer* pTag);
-	void EncodeCapsuleStandard(TagBuffer* pTag);
-	void EncodeCapsuleTapered(TagBuffer* pTag);
-	void EncodeColIdInfo(TagBuffer* pTag);
-
+	std::unique_ptr<CSimEncodeCol>        m_colHandler;
+	std::unique_ptr<CSimEncodeConstraint> m_constHandler;
+	std::unique_ptr<CSimEncodeDef>        m_defHandler;
+	std::unique_ptr<CSimEncodeSubObj>     m_subobjHandler;
+	std::unique_ptr<CSimEncodePattern>    m_patternHandler;
+	std::unique_ptr<CSimEncodeSkin>       m_skinHandler;
+	std::unique_ptr<CSimEncodeRCN>        m_rcnHandler;
 
 private:
-	uint32_t GetTagTotalSize(TagBuffer* pTag);
-
-private:
-	CSimObj* m_pSimObj = nullptr;
-	std::ofstream* m_pDataStream = nullptr;
+	std::shared_ptr<CSimObj> m_pSimObj;
+	std::ofstream* m_pDataStream;
 	uintptr_t m_iStreamPos = std::ios::beg;
 };
+

@@ -1,5 +1,5 @@
 #include "clothjson.h"
-#include <Cloth/SimMesh.h>
+#include "YukesSimMesh"
 #include <YukesCloth>
 #include <QDebug>
 

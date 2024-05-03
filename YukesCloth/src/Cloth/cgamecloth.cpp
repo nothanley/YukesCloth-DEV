@@ -113,12 +113,10 @@ StTag* CGameCloth::getTag(StTag* pParentTag)
 }
 
 #ifdef DEBUG_EDITOR
-void
-SaveTagBinary(std::ifstream* fs, uintptr_t address, StTag* pTag) {
-	fs->seekg(address);
+static void copyDataToTag(char* stream, StTag* pTag)
+{
 	pTag->data.resize(pTag->sTotalSize);
-	fs->read(reinterpret_cast<char*>(pTag->data.data()), pTag->sTotalSize);
-	fs->seekg(pTag->streamPointer);
+    memcpy((char*)pTag->data.data(), stream, pTag->sTotalSize);
 }
 #endif
 
@@ -129,7 +127,7 @@ void CGameCloth::initTag(StTag* tag)
 	this->m_data = (char*)pos + 0xC;
 
 #ifdef DEBUG_EDITOR
-	SaveTagBinary(m_pDataStream, m_iStreamPos, &tag);
+    copyDataToTag((char*)pos, tag);
 #endif
 
 	switch (tag->eType) {

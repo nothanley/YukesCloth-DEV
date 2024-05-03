@@ -15,13 +15,14 @@ public:
 	CClothContainer(const char* FilePath);
 	~CClothContainer();
 	void open();
+    std::shared_ptr<CGameCloth>& getClothObj(){ return m_pClothObj;}
 
 private:
 	void ReadContents();
 	bool isValidContainer(char* data);
 
 private:
-	std::unique_ptr<CGameCloth> m_pClothObj;
+    std::shared_ptr<CGameCloth> m_pClothObj;
 	std::string m_filePath;
 	char* m_data;
 };

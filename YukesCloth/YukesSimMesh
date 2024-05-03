@@ -5,4 +5,12 @@
 #include "simmesh_pattern.h"
 #include "simmesh_rcn.h"
 #include "simmesh_skin.h"
+
+#include "encode_col.h"
+#include "encode_constraint.h"
+#include "encode_def.h"
+#include "encode_obj.h"
+#include "encode_pattern.h"
+#include "encode_rcn.h"
+#include "encode_skin.h"
 #pragma once

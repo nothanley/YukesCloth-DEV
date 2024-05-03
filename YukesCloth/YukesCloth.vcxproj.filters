@@ -30,6 +30,12 @@
     <Filter Include="Cloth\SimMesh\Source">
       <UniqueIdentifier>{9527d85c-407e-4184-886a-7434ff627577}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Encoder\Header">
+      <UniqueIdentifier>{bdbe0f79-10f8-4796-886e-f45e4732bb18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Encoder\Source">
+      <UniqueIdentifier>{ad07218f-c34a-4a33-b351-8d14f7109225}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -85,6 +91,30 @@
     </ClCompile>
     <ClCompile Include="include\hash.cpp">
       <Filter>Include</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\encode_def.cpp">
+      <Filter>Encoder\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\encode_obj.cpp">
+      <Filter>Encoder\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\encode_pattern.cpp">
+      <Filter>Encoder\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\encode_rcn.cpp">
+      <Filter>Encoder\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\encode_skin.cpp">
+      <Filter>Encoder\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\encode_col.cpp">
+      <Filter>Encoder\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\encode_constraint.cpp">
+      <Filter>Encoder\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Encoder\clothserial.cpp">
+      <Filter>Encoder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +177,30 @@
     </ClInclude>
     <ClInclude Include="include\hash.h">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\encode_def.h">
+      <Filter>Encoder\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\encode_obj.h">
+      <Filter>Encoder\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\encode_pattern.h">
+      <Filter>Encoder\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\encode_rcn.h">
+      <Filter>Encoder\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\encode_skin.h">
+      <Filter>Encoder\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\encode_col.h">
+      <Filter>Encoder\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\encode_constraint.h">
+      <Filter>Encoder\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Encoder\clothserial.h">
+      <Filter>Encoder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

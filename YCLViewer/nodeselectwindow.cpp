@@ -4,14 +4,14 @@
 #include <YukesCloth>
 #include <QFileInfo>
 
-NodeSelectWindow::NodeSelectWindow(CSimObj *pSimObject, StTag* pTargetTag, QWidget *parent, const char *fileName) :
+NodeSelectWindow::NodeSelectWindow(std::shared_ptr<CGameCloth>& pSimObject, const StTag* pTargetTag, QWidget *parent, const char *fileName) :
     QDialog(parent),
     ui(new Ui::NodeSelectWindow)
 {
     ui->setupUi(this);
 
     this->setWindowTitle("Add New Node");
-    this->pSimObj = pSimObject;
+    this->m_clothObj = pSimObject;
     this->m_pParentTag = pTargetTag;
     this->m_sFileName = fileName;
     this->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -26,12 +26,11 @@ NodeSelectWindow::NodeSelectWindow(CSimObj *pSimObject, StTag* pTargetTag, QWidg
 NodeSelectWindow::~NodeSelectWindow()
 {
     emit interfaceClose();
-    delete pSimObj;
     delete ui;
 }
 
-int
-GetSimMeshCount(StTag* pTagHead){
+static const int GetSimMeshCount(const StTag* pTagHead)
+{
     int numSims = 0;
     for (auto& child : pTagHead->children)
         numSims += (child->eType == 0x5) ? 1 : 0;
@@ -47,8 +46,9 @@ GetFileString(const QString& filePath) {
 
 void
 NodeSelectWindow::UpdateGUILabels(){
-    int numSimMesh = GetSimMeshCount(pSimObj->m_pStHead);
-    int numNodes = pSimObj->m_pStHead->children.size();
+    auto root = m_clothObj->getRootTag();
+    int numSimMesh = GetSimMeshCount(root);
+    int numNodes = root->children.size();
 
     QString fileName = GetFileString(QString::fromStdString(m_sFileName));
     ui->fileLabel->setText(fileName);
@@ -73,7 +73,7 @@ GetNodeName(const StTag* pSourceTag){
 void
 NodeSelectWindow::SetupListWidget(){
     ui->listWidget->clear();
-    m_tagPalette = pSimObj->m_pStHead->children;
+    m_tagPalette = m_clothObj->getRootTag()->children;
 
     for (int i = 0; i < m_tagPalette.size(); i++)
     {

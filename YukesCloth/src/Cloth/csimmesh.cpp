@@ -72,3 +72,15 @@ StTag* CSimObj::FindTag(uint32_t enTagType, StTag* pParent)
 }
 
 
+void CSimObj::addRootChild(StTag* child_tag) {
+	auto children = m_pStHead->children;
+	children.insert(children.begin(), child_tag);
+}
+
+void CSimObj::addString(const std::string& target) {
+	for (const auto& str : m_stringTable)
+		if (str == target) return;
+
+	m_stringTable.push_back(target);
+}
+
