@@ -56,7 +56,7 @@ void CClothEncoder::setupHandles()
 void CClothEncoder::writeTagHead(TagBuffer* pTagBuf) 
 {
 	pTagBuf->sSize = getTagTotalSize(pTagBuf);
-	//printf("\nSize of Tag: %d", pTagBuf->sSize);
+	printf("\nSize of Tag: %d", pTagBuf->sSize);
 
 	/* Write stream metadata */
 	WriteUInt32(m_pDataStream, pTagBuf->tag->eType);
@@ -185,7 +185,13 @@ CClothEncoder::encodeTag(TagBuffer* pTagBuf)
 			m_defHandler->encodeLineDef(pTagBuf);
 			break;
 		case enTagType_SimMesh_SimLinkTar:
-			m_subobjHandler->encodeLinkTar(pTagBuf);
+			if (m_version == YUKES_CLOTH_24)
+			{
+				m_subobjHandler->encodeLinkTar_2024(pTagBuf);
+			}
+			else {
+				m_subobjHandler->encodeLinkTar(pTagBuf);
+			}
 			break;
 		case enTagType_StrTbl:
 			encodeStringTable(pTagBuf);
@@ -215,7 +221,8 @@ CClothEncoder::encodeTag(TagBuffer* pTagBuf)
 			m_colHandler->encodeColIdInfo(pTagBuf);
 			break;
 		case enTagType_SimMesh_Collection:
-			//todo
+			m_subobjHandler->encodeCollection(pTagBuf);
+			this->m_version = YUKES_CLOTH_24;
 			break;
 		default:
 			std::cerr << "Could not resolve encode format for tag type: " << pTag->eType << ". Skipping node..." << endl;

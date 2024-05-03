@@ -1,5 +1,6 @@
 #include "clothserial.h"
 #include "YukesSimMesh"
+#include "csimmesh.h"
 #pragma once
 
 #define BINARY_ALIGNMENT 16
@@ -31,6 +32,7 @@ private:
 	std::unique_ptr<CSimEncodeRCN>        m_rcnHandler;
 
 private:
+	int m_version = YUKES_CLOTH_23;
 	std::shared_ptr<CSimObj> m_pSimObj;
 	std::ofstream* m_pDataStream;
 	uintptr_t m_iStreamPos = std::ios::beg;

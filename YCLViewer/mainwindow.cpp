@@ -408,7 +408,7 @@ MainWindow::on_SaveButton_clicked()
     if (!savePath.endsWith(".ycl"))
         savePath += ".ycl";
 
-    CClothSave::SaveToDisk(savePath.toStdString().c_str(), m_clothObj.get());
+    CClothSave::SaveToDisk(savePath.toStdString().c_str(), m_clothObj);
     QMessageBox::information(this,"Save Complete", "File saved to: " + savePath);
 }
 
@@ -727,7 +727,7 @@ MainWindow::on_actionSave_triggered()
         QMessageBox::warning(this,"File Error", "YCL is missing a tag hierarchy.");
         return;}
 
-    CClothSave::SaveToDisk(m_sYclFilePath.toStdString().c_str(), m_clothObj.get());
+    CClothSave::SaveToDisk(m_sYclFilePath.toStdString().c_str(), m_clothObj);
     QMessageBox::information(this,"Save Complete", "File saved to: " + m_sYclFilePath);
 }
 
@@ -810,7 +810,7 @@ MainWindow::ReloadTempFile(){
         throw("Failed to write contents.");
 
     QString tempFile = appDataPath + "/editor_temp.ycl";
-    CClothSave::SaveToDisk(tempFile.toStdString().c_str(), m_clothObj.get());
+    CClothSave::SaveToDisk(tempFile.toStdString().c_str(), m_clothObj);
     OpenAppDataYCLFile(tempFile);
 
     if (m_clothObj == nullptr)
@@ -871,18 +871,15 @@ MainWindow::ValidateLinks()
         auto child = pTagHead->children.at(i);
         StSimMesh* mesh = child->pSimMesh;
 
-        if(mesh)
+        if(mesh && !mesh->target.indices.empty() && !HasSimLinkTarget(mesh, pTagHead))
         {
-            bool isTargetMesh = mesh->target.indices.size() != 0;
-            if (isTargetMesh && !HasSimLinkTarget(mesh, pTagHead)){
-                QString filePath = m_sYclFilePath;
-                ClearAllData();
-                OpenYukesClothFile(filePath);
-                QString log = "Could not load node. Target mesh: \"" + QString::fromStdString(mesh->sObjName)
-                        + "\" is missing sim mesh: \"" + QString::fromStdString(mesh->target.source) + "\"";
-                QMessageBox::warning(this,"File Error",log);
-                return;
-            }
+           QString filePath = m_sYclFilePath;
+           this->ClearAllData();
+           OpenYukesClothFile(filePath);
+           QString log = "Could not load node. Target mesh: \"" + QString::fromStdString(mesh->sObjName)
+                         + "\" is missing sim mesh: \"" + QString::fromStdString(mesh->target.source) + "\"";
+           QMessageBox::warning(this,"File Error",log);
+           return;
         }
    }
 }

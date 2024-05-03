@@ -9,7 +9,6 @@ public:
     CSimMeshSubObj(CSimObj* obj, char*& data);
 
 public:
-    void loadCollection(StTag& sMesh);
     void AssignSubObj(StSimMesh& sMesh);
     void AssignSubObjVtx(StSimMesh& sMesh);
     void AssignSimVtx(StSimMesh& sMesh);
@@ -17,6 +16,7 @@ public:
     void loadLinkTar(StSimMesh& sLine);
     void loadLinkTar_2024(StSimMesh& sLine);
     void Link_DefineSourceMesh(StSimMesh& sMesh);
+    void loadCollection(StTag& sMesh);
 
 private:
     StSimMesh* GetMeshSourceObj(const std::string& meshName);

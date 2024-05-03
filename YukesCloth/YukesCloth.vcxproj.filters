@@ -80,9 +80,6 @@
     <ClCompile Include="src\Cloth\Mesh\simmesh_rcn.cpp">
       <Filter>Cloth\SimMesh\Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Cloth\cgamecloth.cpp">
-      <Filter>Cloth</Filter>
-    </ClCompile>
     <ClCompile Include="src\Cloth\csimmesh.cpp">
       <Filter>Cloth</Filter>
     </ClCompile>
@@ -115,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="src\Encoder\clothserial.cpp">
       <Filter>Encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cloth\cgamecloth.cpp">
+      <Filter>Cloth</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -144,3 +144,57 @@ void CSimEncodeSubObj::encodeSimLinkSource(TagBuffer* pTagBuf)
 }
 
 
+void CSimEncodeSubObj::encodeCollection(TagBuffer* pTagBuf)
+{
+	const StTag* tag = pTagBuf->tag;
+	StSimMesh* pSimMesh = tag->pSimMesh;
+
+
+	WriteUInt32(pTagBuf->binary, tag->children.size());
+	WriteUInt32(pTagBuf->binary, 0x0);
+	WriteUInt32(pTagBuf->binary, pSimMesh->sSimVtxCount);
+	AlignTagHeader(pTagBuf);
+}
+
+void CSimEncodeSubObj::encodeLinkTar_2024(TagBuffer* pTagBuf)
+{
+	const StTag* tag = pTagBuf->tag;
+	StSimMesh* pSimMesh = tag->pSimMesh;
+	LinkTarget target = pSimMesh->target;
+
+	int mesh_index = clothsrl::FindStringIndex(target.source, m_pSimObj->stringTable());
+	WriteUInt32(pTagBuf->binary, mesh_index);
+	WriteUInt32(pTagBuf->binary, target.indices.size());
+	WriteUInt32(pTagBuf->binary, target.palette.size());
+	WriteUInt32(pTagBuf->binary, target.totalWeights);
+	AlignTagHeader(pTagBuf);
+
+	for (auto& idx : target.indices) {
+		WriteUInt32(pTagBuf->binary, idx);
+	}
+
+	for (auto& idx : target.palette) {
+		WriteUInt32(pTagBuf->binary, idx);
+	}
+
+	for (auto& influence : target.weights)
+		for (int i = 0; i < target.totalWeights; i++)
+		{
+			uint32_t totalWeights = influence.weights.size();
+
+			if (i > totalWeights) {
+				WriteUInt64(pTagBuf->binary, 0x0);
+			}
+			else
+			{
+				float value = influence.weights.at(i);
+				uint32_t paletteIdx = influence.indices.at(i);
+
+				WriteUInt16(pTagBuf->binary, totalWeights);
+				WriteUInt16(pTagBuf->binary, paletteIdx);
+				WriteFloat(pTagBuf->binary, value);
+			}
+		}
+
+	AlignStream(pTagBuf->binary, BINARY_ALIGNMENT, 0xC);
+}
