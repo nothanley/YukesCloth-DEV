@@ -21,6 +21,10 @@ private:
 	void encodeStringTable(TagBuffer* pTagBuf);
 	void encodeString(TagBuffer* pTagBuf);
 	uint32_t getTagTotalSize(TagBuffer* pTag);
+	
+private:
+    void retargetNodeTree_2024(StTag *root);
+	void checkFileFormat();
 
 private:
 	std::unique_ptr<CSimEncodeCol>        m_colHandler;
@@ -32,6 +36,7 @@ private:
 	std::unique_ptr<CSimEncodeRCN>        m_rcnHandler;
 
 private:
+	int m_compileTarget = YUKES_CLOTH_24;
 	int m_version = YUKES_CLOTH_23;
 	std::shared_ptr<CSimObj> m_pSimObj;
 	std::ofstream* m_pDataStream;

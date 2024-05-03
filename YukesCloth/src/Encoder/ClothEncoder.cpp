@@ -20,6 +20,8 @@ void CClothEncoder::save()
 	pRootBuffer->tag = new StTag;
 	*pRootBuffer->tag = *m_pSimObj->getRootTag();	
 
+	this->checkFileFormat();
+
 	/* Recursively create all child tag buffers */
 	this->initTagBuffers(pRootBuffer);
 
@@ -28,6 +30,60 @@ void CClothEncoder::save()
 
 	/* Merge datasets and write tree hierarchy to out file */
 	writeTree(pRootBuffer);
+}
+
+static bool hasCollectionStack(const StTag* tag)
+{
+	for (auto& child : tag->children)
+		if (child->eType == enTagType_SimMesh_Collection)
+			return true;
+
+	return false;
+}
+
+static void clearDeprecatedSkinDataNode(StTag* root)
+{
+	std::vector<StTag*> filtered_childs;
+
+	for (auto& node : root->children)
+	{
+		if (node->eType != enTagType_SimMesh_Skin)
+			filtered_childs.push_back(node);
+	}
+	root->children = filtered_childs;
+}
+
+void CClothEncoder::retargetNodeTree_2024(StTag* root)
+{
+	bool isSimObj = (root->eType == enTagType_SimMesh || root->eType == enTagType_SimLine);
+	bool usingCollection = (isSimObj) ? (!root->children.empty() && hasCollectionStack(root)) : false;
+
+	if (isSimObj)
+		clearDeprecatedSkinDataNode(root);
+
+	if (isSimObj && !usingCollection)
+	{
+		StTag* collectionTag = new StTag;
+		collectionTag->eType = enTagType_SimMesh_Collection;
+		collectionTag->pParent = root;
+		collectionTag->pSimMesh = root->pSimMesh;
+		for (auto& child : root->children)
+			collectionTag->children.push_back(child);
+
+		root->children = std::vector<StTag*>{ collectionTag };
+	}
+	
+	for (auto& child : root->children)
+		retargetNodeTree_2024(child);
+}
+
+void CClothEncoder::checkFileFormat()
+{
+	StTag* new_col_tag_24 = m_pSimObj->FindTag(enTagType_SimMesh_Collection);
+	m_version = (new_col_tag_24) ? YUKES_CLOTH_24 : m_version;
+
+    if (m_compileTarget == YUKES_CLOTH_24)
+        this->retargetNodeTree_2024( const_cast<StTag*>(m_pSimObj->getRootTag()) );
 }
 
 
@@ -56,7 +112,7 @@ void CClothEncoder::setupHandles()
 void CClothEncoder::writeTagHead(TagBuffer* pTagBuf) 
 {
 	pTagBuf->sSize = getTagTotalSize(pTagBuf);
-	printf("\nSize of Tag: %d", pTagBuf->sSize);
+	//printf("\nSize of Tag: %d", pTagBuf->sSize);
 
 	/* Write stream metadata */
 	WriteUInt32(m_pDataStream, pTagBuf->tag->eType);
@@ -87,8 +143,9 @@ void CClothEncoder::initTagBuffers(TagBuffer* pParentBuf)
 		/* Create TagBuffer */
 		TagBuffer* pChildBuf = new TagBuffer;
 		pChildBuf->tag = tag;
+		
+		this->initTagBuffers(pChildBuf);
 
-		initTagBuffers(pChildBuf);
 		pParentBuf->children.push_back(pChildBuf);
 	}
 }

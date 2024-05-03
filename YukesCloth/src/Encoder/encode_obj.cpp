@@ -198,3 +198,6 @@ void CSimEncodeSubObj::encodeLinkTar_2024(TagBuffer* pTagBuf)
 
 	AlignStream(pTagBuf->binary, BINARY_ALIGNMENT, 0xC);
 }
+
+
+
