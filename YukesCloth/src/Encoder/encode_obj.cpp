@@ -148,11 +148,12 @@ void CSimEncodeSubObj::encodeCollection(TagBuffer* pTagBuf)
 {
 	const StTag* tag = pTagBuf->tag;
 	StSimMesh* pSimMesh = tag->pSimMesh;
-
+	uint32_t numVerts = pSimMesh->skin.vertices.size();
+	//printf("\nEncoding collection mesh with %d verts.", numVerts);
 
 	WriteUInt32(pTagBuf->binary, tag->children.size());
 	WriteUInt32(pTagBuf->binary, 0x0);
-	WriteUInt32(pTagBuf->binary, pSimMesh->sSimVtxCount);
+	WriteUInt32(pTagBuf->binary, numVerts);
 	AlignTagHeader(pTagBuf);
 }
 

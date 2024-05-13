@@ -15,7 +15,7 @@ public:
     void encodeColPack(TagBuffer* tag);
     void encodeCapsuleTapered(TagBuffer* tag);
     void encodeCapsuleStandard(TagBuffer* tag);
-    void encodeCollisionVerts(TagBuffer* tag);
+    void encodeCollisionVerts(TagBuffer* pTagBuf, StTag* tag, StSimMesh* pSimMesh);
     void encodeColIdInfo(TagBuffer* pTag);
 
 private:

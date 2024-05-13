@@ -67,7 +67,7 @@ static const std::vector<std::string> ENTAG_STRING_TITLES =
     "SimMesh_BendingStiffness",
     "",
     "",
-    "",
+    "Copy_Node",
     "",
     "",
     "SimMesh_Collection"

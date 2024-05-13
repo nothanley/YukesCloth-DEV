@@ -49,6 +49,7 @@ protected:
     StTag* m_pStHead;
 
 protected:
+    char* m_memOffset;
     char* m_data;
 };
 

@@ -10,7 +10,7 @@ void CSimObj::loadStringTable()
 	uint32_t numStrings = u32;
 	this->pos += 0x20;
 
-	printf("Total Strings: %d\n", numStrings);
+	printf("\t{YCL Log} Total Strings: %d\n", numStrings);
 	m_data = (char*)this->pos;
 
 	for (int i = 0; i < numStrings; i++) {

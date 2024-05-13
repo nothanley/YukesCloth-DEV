@@ -15,12 +15,12 @@ CClothEncoder::CClothEncoder(std::ofstream* outStream, std::shared_ptr<CSimObj>&
 
 void CClothEncoder::save()
 {
+	this->checkFileFormat();
+
 	/* Setup header tag buffer */
 	TagBuffer* pRootBuffer = new TagBuffer;
 	pRootBuffer->tag = new StTag;
 	*pRootBuffer->tag = *m_pSimObj->getRootTag();	
-
-	this->checkFileFormat();
 
 	/* Recursively create all child tag buffers */
 	this->initTagBuffers(pRootBuffer);
@@ -53,28 +53,92 @@ static void clearDeprecatedSkinDataNode(StTag* root)
 	root->children = filtered_childs;
 }
 
+static void makeRootCollectionTag(StTag* root)
+{
+	StTag* collectionTag = new StTag;
+	collectionTag->eType = enTagType_SimMesh_Collection;
+	collectionTag->pParent = root;
+	collectionTag->children.clear();
+	collectionTag->pSimMesh = root->pSimMesh;
+
+	for (auto& child : root->children) {
+		collectionTag->children.push_back(child);
+	}
+
+	root->children = std::vector<StTag*>{ collectionTag };
+}
+
+static std::vector<StTag*> getAllPatternStacks(const StTag* root)
+{
+	std::vector<StTag*> tags;
+
+	for (auto& tag : root->children) {
+		if (tag->eType == enTagType_SimMesh_Pattern) {
+			tags.push_back(tag);
+		}
+	}
+
+	return tags;
+}
+
+static void makeCopyNode(StTag* parent, StTag* sourceNode, const int index)
+{
+	StTag* copyNodeTag       = new StTag;
+	copyNodeTag->eType       = enTagType_Copy_Node;
+	copyNodeTag->pParent     = parent;
+	copyNodeTag->pSimMesh    = sourceNode->pSimMesh;
+	copyNodeTag->copy_index  = sourceNode->eType;
+	
+	parent->children.at(index) = copyNodeTag;
+	delete sourceNode;
+}
+
+static void reformatPatternNodeCopy(StTag* root)
+{
+	auto stackTag = (!root->children.empty()) ? root->children.front() : nullptr;
+	if (!stackTag || (stackTag->eType != enTagType_SimMesh_Stacks))
+		return;
+
+	int numStackProps = stackTag->children.size();
+	for (int i = 0; i < numStackProps; i++)
+	{
+		auto propTag = stackTag->children.at(i);
+		bool isLegalNode = (propTag->eType == enTagType_Copy_Node) || (propTag->eType == enTagType_SimMesh_ColVtx);
+
+		if (!isLegalNode)
+			makeCopyNode(stackTag, propTag, i);
+	}
+}
+
+void CClothEncoder::retargetPatternCopy(StTag* root)
+{
+	auto tags = getAllPatternStacks(root);
+	if (tags.size() < 2)
+		return;
+
+	for (int i = 1; i < tags.size(); i++)
+	{
+		::reformatPatternNodeCopy(tags.at(i));
+	}
+}
+
 void CClothEncoder::retargetNodeTree_2024(StTag* root)
 {
 	bool isSimObj = (root->eType == enTagType_SimMesh || root->eType == enTagType_SimLine);
 	bool usingCollection = (isSimObj) ? (!root->children.empty() && hasCollectionStack(root)) : false;
 
-	if (isSimObj)
-		clearDeprecatedSkinDataNode(root);
+	if (isSimObj) {
+		//::clearDeprecatedSkinDataNode(root);
+		this->retargetPatternCopy(root);
+	}
 
-	if (isSimObj && !usingCollection)
-	{
-		StTag* collectionTag = new StTag;
-		collectionTag->eType = enTagType_SimMesh_Collection;
-		collectionTag->pParent = root;
-		collectionTag->pSimMesh = root->pSimMesh;
-		for (auto& child : root->children)
-			collectionTag->children.push_back(child);
-
-		root->children = std::vector<StTag*>{ collectionTag };
+	if (isSimObj && !usingCollection){
+		::makeRootCollectionTag(root);
 	}
 	
-	for (auto& child : root->children)
-		retargetNodeTree_2024(child);
+	for (auto& child : root->children) {
+		this->retargetNodeTree_2024(child);
+	}
 }
 
 void CClothEncoder::checkFileFormat()
@@ -82,8 +146,10 @@ void CClothEncoder::checkFileFormat()
 	StTag* new_col_tag_24 = m_pSimObj->FindTag(enTagType_SimMesh_Collection);
 	m_version = (new_col_tag_24) ? YUKES_CLOTH_24 : m_version;
 
-    if (m_compileTarget == YUKES_CLOTH_24)
-        this->retargetNodeTree_2024( const_cast<StTag*>(m_pSimObj->getRootTag()) );
+	if (m_compileTarget == YUKES_CLOTH_24)
+	{
+		this->retargetNodeTree_2024(const_cast<StTag*>(m_pSimObj->getRootTag()));
+	}
 }
 
 
@@ -230,7 +296,7 @@ CClothEncoder::encodeTag(TagBuffer* pTagBuf)
 			m_constHandler->encodeBendStiffness(pTagBuf);
 			break;
 		case enTagType_SimMesh_ColVtx:
-			m_colHandler->encodeCollisionVerts(pTagBuf);
+			m_colHandler->encodeCollisionVerts(pTagBuf, pTagBuf->tag, pTagBuf->tag->pSimMesh);
 			break;
 		case enTagType_SimMesh_CtFixation:
 			m_constHandler->encodeConstraintFixation(pTagBuf);
@@ -281,8 +347,11 @@ CClothEncoder::encodeTag(TagBuffer* pTagBuf)
 			m_subobjHandler->encodeCollection(pTagBuf);
 			this->m_version = YUKES_CLOTH_24;
 			break;
+		case enTagType_Copy_Node:
+			m_defHandler->encodePasteNode(pTagBuf);
+			break;
 		default:
-			std::cerr << "Could not resolve encode format for tag type: " << pTag->eType << ". Skipping node..." << endl;
+			std::cerr << "\t\t{YCL Log} Could not resolve encode format for tag type: " << pTag->eType << ". Skipping node..." << endl;
 			pTagBuf->bUsePreDef = true;
 			break;
 	}

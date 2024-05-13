@@ -13,6 +13,8 @@ class CGameCloth : public CSimObj
 public:
 	CGameCloth(char* data);
 	void load();
+	const int getFileVersion() const { return game_format; }
+	bool isFormatInvalid() const;
 
 protected:
 	void initTag(StTag* tag);
@@ -22,6 +24,7 @@ protected:
 
 private:
 	void setupSimHandles();
+	void rebaseTagPtr(StTag* root);
 
 private:
 	std::unique_ptr<CSimMeshCol>        m_colHandler;

@@ -15,7 +15,7 @@ public:
 	CClothContainer(const char* FilePath);
 	~CClothContainer();
 	void open();
-    std::shared_ptr<CGameCloth>& getClothObj(){ return m_pClothObj;}
+    std::shared_ptr<CGameCloth>& clothObj(){ return m_pClothObj;}
 
 private:
 	void ReadContents();

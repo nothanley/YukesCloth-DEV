@@ -15,6 +15,7 @@ public:
     void loadLineDef(StSimMesh& sMesh);
     void InitializeNodePalette(const StTag& parent);
     void loadNodeTable();
+    void loadNodeCopy(StTag& pTag);
 
 private:
     bool useOldAssignNodeSchema(const uintptr_t& address, char*& fs, int numNodes);

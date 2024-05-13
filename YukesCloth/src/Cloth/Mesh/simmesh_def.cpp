@@ -14,10 +14,10 @@ void CSimMeshDef::loadSimMesh(StTag& parent)
 
 #ifdef DEBUG_CONSOLE
 	//printf("Pos: %d\n", uint64_t(this->m_pDataStream->tellg()) );
-	printf("\n\t\t- StSimMesh {sTags: %d, sName:%d, sSimVtxCount:%d, sIterationCount:%d, bCalcNormal: %s, bDispObject: %s}\n",
-		_SimMesh->numTags, _SimMesh->sNameIdx, _SimMesh->sSimVtxCount,
-		_SimMesh->sIterationCount, _SimMesh->bCalcNormal ? "true" : "false",
-		_SimMesh->bDispObject ? "true" : "false");
+	//printf("\n\t\t- StSimMesh {sTags: %d, sName:%d, sSimVtxCount:%d, sIterationCount:%d, bCalcNormal: %s, bDispObject: %s}\n",
+	//	_SimMesh->numTags, _SimMesh->sNameIdx, _SimMesh->sSimVtxCount,
+	//	_SimMesh->sIterationCount, _SimMesh->bCalcNormal ? "true" : "false",
+	//	_SimMesh->bDispObject ? "true" : "false");
 #endif
 
 	/* Assign sim mesh pointer */
@@ -35,9 +35,9 @@ void CSimMeshDef::loadSimLine(StTag& pTag)
 	pTag.pSimMesh = pSimLine;
 
 #ifdef DEBUG_CONSOLE
-	printf("\n\t\t- StSimLine {sTags: %d, sName:%d, sSimVtxCount:%d, sIterationCount:%d}\n",
-		pSimLine->numTags, pSimLine->sNameIdx,
-		pSimLine->sSimVtxCount, pSimLine->sIterationCount);
+	//printf("\n\t\t- StSimLine {sTags: %d, sName:%d, sSimVtxCount:%d, sIterationCount:%d}\n",
+	//	pSimLine->numTags, pSimLine->sNameIdx,
+	//	pSimLine->sSimVtxCount, pSimLine->sIterationCount);
 #endif
 
 }
@@ -113,7 +113,7 @@ void CSimMeshDef::loadNodeTable()
 	m_pSimObj->clear_nodes();
 	m_pSimObj->pos += 0x20;
 
-	printf("Total Nodes: %d\n", numNodes);
+	printf("\t{YCL Log} Total Nodes: %d\n", numNodes);
 	m_data = (char*)m_pSimObj->pos;
 
 	for (uint32_t i = 0; i < numNodes; i++) {
@@ -131,5 +131,11 @@ void CSimMeshDef::InitializeNodePalette(const StTag& tag)
 	m_pSimObj->initTag(assignTag);
 
 	m_data = (char*)tag.streamPointer + 0xC;
+}
+
+void CSimMeshDef::loadNodeCopy(StTag& pTag)
+{
+	uint32_t numChildren = u32;
+    pTag.copy_index		 = u32;
 }
 

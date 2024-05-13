@@ -7,14 +7,13 @@ CClothSave::CClothSave(const char* filePath, std::shared_ptr<CSimObj> pSimObj) {
 	m_sFilePath = filePath;
 	m_pSimObj = pSimObj;
 
-	if (this->Save())
-		printf("\nAll Saving complete.");
+	this->Save();
 }
 
 bool
 CClothSave::Save() {
 	if (!this->isFileOk()) {
-		printf("Cannot access YCL file");
+		printf("\t{YCL Log} Cannot access YCL file");
 		return false;
 	}
 

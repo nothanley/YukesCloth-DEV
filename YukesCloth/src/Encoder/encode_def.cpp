@@ -30,9 +30,10 @@ void CSimEncodeDef::encodeSimLine(TagBuffer* pTagBuf)
 {
 	const StTag* tag = pTagBuf->tag;
 	StSimMesh* pSimMesh = tag->pSimMesh;
+	uint32_t numChildren = pTagBuf->children.size();
 
 	uint32_t nameIdx = FindStringIndex(pSimMesh->sModelName, m_pSimObj->stringTable());
-	WriteUInt32(pTagBuf->binary, pSimMesh->numTags);
+	WriteUInt32(pTagBuf->binary, numChildren);
 	WriteUInt32(pTagBuf->binary, nameIdx);
 	WriteUInt32(pTagBuf->binary, pSimMesh->sSimVtxCount);
 	WriteUInt32(pTagBuf->binary, pSimMesh->sIterationCount);
@@ -121,3 +122,16 @@ void CSimEncodeDef::encodeNodeTable(TagBuffer* pTagBuf) {
 	}
 
 }
+
+
+void CSimEncodeDef::encodePasteNode(TagBuffer* pTagBuf)
+{
+	StTag* tag = pTagBuf->tag;
+	uint32_t numChildren = tag->children.size();
+    uint32_t pasteIndex = tag->copy_index;
+
+	WriteUInt32(pTagBuf->binary, numChildren);
+	WriteUInt32(pTagBuf->binary, pasteIndex);
+	AlignTagHeader(pTagBuf);
+}
+

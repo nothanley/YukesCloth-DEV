@@ -68,8 +68,7 @@ void CSimMeshSkin::loadSkinCalc(StSimMesh& sMesh)
 	uint32_t numSkinVerts = u32;
 	m_data = (char*)m_pSimObj->pos + 0x10;
 
-	if (sMesh.skin.vertices.empty())
-		sMesh.skin.vertices.resize( sMesh.sSimVtxCount );
+	sMesh.skinCalc.clear();
 
 	for (int i = 0; i < numSkinVerts; i++)
 	{
@@ -87,6 +86,8 @@ void CSimMeshSkin::loadSkinPaste(StSimMesh& sMesh)
 {
 	uint32_t numPasteVerts = u32;
 	m_data = (char*)m_pSimObj->pos + 0x10;
+
+	sMesh.skinPaste.clear();
 
 	for (int i = 0; i < numPasteVerts; i++)
 	{

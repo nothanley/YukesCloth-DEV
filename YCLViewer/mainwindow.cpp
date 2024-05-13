@@ -130,7 +130,7 @@ MainWindow::OpenYukesClothFile(const QString& filePath){
         return;
     }
 
-    m_clothObj = clothFile->getClothObj();
+    m_clothObj = clothFile->clothObj();
     const StTag* pRootNode = m_clothObj->getRootTag();
     PopulateTreeWidget(pRootNode);
     UpdateStatLabels();
@@ -147,7 +147,7 @@ MainWindow::OpenAppDataYCLFile(const QString& filePath){
         return;
     }
 
-    m_clothObj = clothFile->getClothObj();
+    m_clothObj = clothFile->clothObj();
     const StTag* pRootNode = m_clothObj->getRootTag();
     PopulateTreeWidget(pRootNode);
     UpdateStatLabels();
@@ -536,7 +536,7 @@ MainWindow::on_addnodebutton_clicked()
     try{
         CClothContainer yclFile(sourceFile.toStdString().c_str());
         yclFile.open();
-        this->m_pSelectionWindow = new NodeSelectWindow( yclFile.getClothObj(), pUserTag, this, sourceFile.toStdString().c_str() );
+        this->m_pSelectionWindow = new NodeSelectWindow( yclFile.clothObj(), pUserTag, this, sourceFile.toStdString().c_str() );
         m_pSelectionWindow->show();
     }
     catch(...){

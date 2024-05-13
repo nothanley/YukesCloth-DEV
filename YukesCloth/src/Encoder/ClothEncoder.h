@@ -23,6 +23,7 @@ private:
 	uint32_t getTagTotalSize(TagBuffer* pTag);
 	
 private:
+	void retargetPatternCopy(StTag* root);
     void retargetNodeTree_2024(StTag *root);
 	void checkFileFormat();
 

@@ -13,6 +13,8 @@ void CSimMeshConstraint::loadForce(StSimMesh& sMesh)
 	sMesh.force.parameters = std::vector<float>{ f32, f32, f32, f32 };
 	m_data = (char*)m_pSimObj->pos + 0x30;
 
+	sMesh.force.data.clear();
+
 	for (int i = 0; i < numVerts; i++)
 	{
 		sMesh.force.data.push_back(SkinVertex{ u32,f32 });

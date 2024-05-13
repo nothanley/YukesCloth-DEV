@@ -46,7 +46,7 @@ void CSimMeshCol::loadCapsuleStandard(StTag& tag)
 
 	capsule.id = u32;
 	if (capsule.indexB >= numNodes) {
-		printf("Invalid capsule join. Could not get node table index.\n");
+		printf("\t{YCL Log} Invalid capsule join. Could not get node table index.\n");
 		capsule.indexB = numNodes - 1;
 	}
 
@@ -85,31 +85,33 @@ void CSimMeshCol::loadCapsuleTapered(StTag& tag)
 
 void CSimMeshCol::loadCollisionVerts(StTag& tag, StSimMesh& sMesh) 
 {
-	sMesh.colVtx.tagSize = tag.sSize;
-	sMesh.colVtx.unkFlag = s32;
+	CollisionVerts colVtxBf;
+	colVtxBf.tagSize = tag.sSize;
+	colVtxBf.unkFlag = s32;
 	m_data = (char*)m_pSimObj->pos + 0x30;
-
-	sMesh.colVtx.unkVal  = s32;
-	sMesh.colVtx.numItems = s32;
-	sMesh.colVtx.numVerts = s32;
-	sMesh.colVtx.unkFlagB = s32;
+	
+	colVtxBf.unkVal   = s32;
+	colVtxBf.numItems = s32;
+	colVtxBf.numVerts = s32;
+	colVtxBf.unkFlagB = s32;
 	m_data = (char*)m_pSimObj->pos + tag.sSize;
-
-	for (int i = 0; i < sMesh.colVtx.numItems; i++)
-	{
+	
+	for (int i = 0; i < colVtxBf.numItems; i++){
 		Points segment;
 		segment.x.index  = u32;
 		segment.y.index  = u32;
 		segment.x.weight = f32;
 		segment.y.weight = f32;
-
-		sMesh.colVtx.items.push_back(segment);
+	
+		colVtxBf.items.push_back(segment);
 	}
-
-	for (int i = 0; i < sMesh.colVtx.numVerts; i++)
-	{
-		sMesh.colVtx.indices.push_back(u32);
+	
+	for (int i = 0; i < colVtxBf.numVerts; i++){
+		colVtxBf.indices.push_back(u32);
 	}
+	
+	tag.vtxCol_index = tag.pSimMesh->vtxColGroups.size();
+	sMesh.vtxColGroups.push_back(colVtxBf);
 }
 
 

@@ -142,8 +142,9 @@ ClothJson::CreateJsonVertexTables(StSimMesh* pSimMesh){
 
     /* Append vtx save table */
     std::vector<uint32_t> col_vtx_table;
-    for (int i = 0; i < pSimMesh->colVtx.items.size(); i++){
-        auto edge = pSimMesh->colVtx.items[i];
+    CollisionVerts& cols = pSimMesh->vtxColGroups.front();
+    for (int i = 0; i < cols.items.size(); i++){
+        auto edge   = cols.items[i];
         auto pointA = UnpackVertexIndex(pSimMesh,edge.x.index);
         auto pointB = UnpackVertexIndex(pSimMesh,edge.y.index);
         col_vtx_table.push_back(pointA);

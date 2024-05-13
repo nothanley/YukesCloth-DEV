@@ -99,45 +99,48 @@ void CSimEncodeCol::encodeColIdInfo(TagBuffer* pTag)
 	AlignStream(pTag->binary, BINARY_ALIGNMENT, 0xC);
 }
 
-static void WriteColVertHeader(TagBuffer* pTagBuf, StSimMesh* pSimMesh)
+static void WriteColVertHeader(TagBuffer* pTagBuf, const CollisionVerts& cGroup)
 {
-	int32_t unkFlagA = pSimMesh->colVtx.unkFlag;
-	int32_t unkFlagB = pSimMesh->colVtx.unkFlagB;
-	int32_t unkVal = pSimMesh->colVtx.unkVal;
-	int32_t numItems = pSimMesh->colVtx.numItems;
-	int32_t numVerts = pSimMesh->colVtx.numVerts;
+	int32_t unkFlagA = cGroup.unkFlag;
+	int32_t unkFlagB = cGroup.unkFlagB;
+	int32_t unkVal   = cGroup.unkVal;
+	int32_t numItems = cGroup.numItems;
+	int32_t numVerts = cGroup.numVerts;
 
-	WriteInt32(pTagBuf->binary, pSimMesh->colVtx.unkFlag);
+	WriteInt32(pTagBuf->binary, cGroup.unkFlag);
 	for (int i = 0; i < 4; i++)
 		WriteUInt64(pTagBuf->binary, 0x0);
 
-	WriteInt32(pTagBuf->binary, pSimMesh->colVtx.unkVal);
-	WriteInt32(pTagBuf->binary, pSimMesh->colVtx.numItems);
-	WriteInt32(pTagBuf->binary, pSimMesh->colVtx.numVerts);
-	WriteInt32(pTagBuf->binary, pSimMesh->colVtx.unkFlagB);
+	WriteInt32(pTagBuf->binary, cGroup.unkVal);
+	WriteInt32(pTagBuf->binary, cGroup.numItems);
+	WriteInt32(pTagBuf->binary, cGroup.numVerts);
+	WriteInt32(pTagBuf->binary, cGroup.unkFlagB);
 
-	uint32_t numPads = (pSimMesh->colVtx.tagSize != 0x50) ? 4 : 2;
+	uint32_t numPads = (cGroup.tagSize != 0x50) ? 4 : 2;
 	for (int i = 0; i < numPads; i++)
 		WriteUInt64(pTagBuf->binary, 0x0);
 
 	AlignTagHeader(pTagBuf);
 }
 
-void CSimEncodeCol::encodeCollisionVerts(TagBuffer* pTagBuf)
+void CSimEncodeCol::encodeCollisionVerts(TagBuffer* pTagBuf, StTag* tag, StSimMesh* pSimMesh)
 {
-	const StTag* tag = pTagBuf->tag;
-	StSimMesh* pSimMesh = tag->pSimMesh;
-	WriteColVertHeader(pTagBuf, pSimMesh);
+	int col_index = tag->vtxCol_index;
+	if (col_index > pSimMesh->vtxColGroups.size())
+		throw std::runtime_error("Col group index cannot be greater than sim mesh array.");
 
-	for (auto& point : pSimMesh->colVtx.items) {
+	CollisionVerts& cGroup = pSimMesh->vtxColGroups.at(col_index);
+	::WriteColVertHeader(pTagBuf, cGroup);
+
+	for (auto& point : cGroup.items) {
 		WriteUInt32(pTagBuf->binary, point.x.index);
 		WriteUInt32(pTagBuf->binary, point.y.index);
 
-		WriteFloat(pTagBuf->binary, point.x.weight);
-		WriteFloat(pTagBuf->binary, point.y.weight);
+		WriteFloat(pTagBuf->binary,  point.x.weight);
+		WriteFloat(pTagBuf->binary,  point.y.weight);
 	}
 
-	for (auto& point : pSimMesh->colVtx.indices) {
+	for (auto& point : cGroup.indices) {
 		WriteUInt32(pTagBuf->binary, point);
 	}
 

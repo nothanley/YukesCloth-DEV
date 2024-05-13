@@ -14,8 +14,8 @@ void CSimMeshSubObj::AssignSubObj(StSimMesh& sMesh) {
 	sMesh.sObjIndex = u32;
 
 #ifdef DEBUG_CONSOLE
-	printf("\n\t\t- StSimMesh_AssignSubObj {sTags: %d, sModelName:%d, sObjName:%d }\n",
-		numTags, sMesh.sMeshIndex, sMesh.sObjIndex);
+	//printf("\n\t\t- StSimMesh_AssignSubObj {sTags: %d, sModelName:%d, sObjName:%d }\n",
+		//numTags, sMesh.sMeshIndex, sMesh.sObjIndex);
 #endif
 }
 
@@ -38,6 +38,7 @@ CSimMeshSubObj::AssignSimVtx(StSimMesh& sMesh) {
 	uint32_t numSimVerts = u32;
 	m_data = (char*)m_pSimObj->pos + 0x20;
 
+	sMesh.simVerts.clear();
 	for (uint32_t i = 0; i < numSimVerts; i++) {
 		uint32_t nullValue = u32;
 		sMesh.simVerts.push_back(u32);
@@ -49,6 +50,7 @@ CSimMeshSubObj::SaveOldVtxs(StSimMesh& sMesh) {
 	uint32_t numVerts = u32;
 	m_data = (char*)m_pSimObj->pos + 0x10;
 
+	sMesh.saveVerts.clear();
 	for (int i = 0; i < numVerts; i++)
 	{
 		sMesh.saveVerts.push_back(u32);

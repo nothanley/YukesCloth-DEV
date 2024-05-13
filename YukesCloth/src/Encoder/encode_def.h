@@ -16,6 +16,7 @@ public:
     void encodeLineDef(TagBuffer* sMesh);
     void encodeRootTag(TagBuffer* pTagBuf);
     void encodeNodeTable(TagBuffer* pTagBuf);
+    void encodePasteNode(TagBuffer* pTagBuf);
 
 private:
     std::ofstream*& m_data;

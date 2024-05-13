@@ -1,24 +1,31 @@
 // YukesCloth.cpp : This file contains the 'main' function. Program execution begins and ends there. //
-#include "YukesCloth"
-#include <Encoder/Import/SimMeshJson.h>
+
 #include <iostream>
-#include "Container/clothfile.h"
-#include "clothsave.h"
+#include "console_runner.hpp"
 
-int main()
+int main(int argc, char* argv[])
 {
-    CClothContainer yclfile(
-        //"C:\\Users\\wauke\\Desktop\\hair_00170-24.ycl");
-        "C:\\Users\\wauke\\Desktop\\hair_00170.ycl");
-        //"C:\\Users\\wauke\\Desktop\\1031_Attire.ycl");
+    //std::string path("C:\\Users\\wauke\\Desktop\\1025_Attire_2023.ycl");
 
-    yclfile.open();
+    if (argc != 2) {
+        runconv::run_dir_conv();
+    }
+    else 
+    {
+        printf("\n{YCL Conv} Processing Input...\n");
+        std::string path(argv[1]);
 
-    CClothSave::SaveToDisk(
-        "C:\\Users\\wauke\\Desktop\\out_file.ycl", 
-        yclfile.getClothObj() );
+        try {
+            runconv::run_cloth_conv(path);
+        }
+        catch (...) {
+            printf("\n{YCL Conv} Failed to read YCL contents.");
+        }
+    }
+   
 
-    //CJsonSimMesh jsonMesh("C:\\Users\\wauke\\Desktop\\plane_source.jsim");
+    printf("\n\nAll operations complete.\n");
+    system("pause");
 }
 
 

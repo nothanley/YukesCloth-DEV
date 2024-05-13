@@ -95,6 +95,8 @@ struct CollisionVerts {
 	int32_t unkFlagB;
 	uint32_t tagSize;
 
+	char* debug_binary = nullptr;
+
 	std::vector<Points> items;
 	std::vector<uint32_t> indices;
 };
@@ -134,7 +136,7 @@ struct StSimMesh {
 
 	bool bCalcNormal;
 	bool bDispObject;
-	bool bSimPattern;
+	int32_t bSimPattern;
 
 	bool bIsSimLine;
     int sMeshIndex;
@@ -151,9 +153,9 @@ struct StSimMesh {
 	std::vector<Triangle> sourceEdges;
     std::vector<SimConstraint> constraints;
 	std::vector<SimNode> nodePalette;
+	std::vector<CollisionVerts> vtxColGroups;
 
 	MeshSkin skin;
-	CollisionVerts colVtx;
 	RCNData rcn;
 	ForceField force;
 	LineDef lines;
@@ -174,6 +176,8 @@ struct StTag {
 	StTag* pParent = nullptr;
 	uintptr_t streamPointer;
 	CollisionVolume col;
+	int16_t copy_index = -1;
+	int16_t vtxCol_index = -1;
 
 	std::string sTagName;
 	std::vector<StTag*> children;

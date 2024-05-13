@@ -348,13 +348,14 @@ CJsonSimMesh::Load_ColVerts(StTag* pTagParent) {
     pTag->pSimMesh = sMesh;
     auto meshColVerts = m_Json["Mesh"]["ColVerts"];
 
-    sMesh->colVtx.tagSize = -1;
-    sMesh->colVtx.unkFlag = -1;
-    sMesh->colVtx.unkVal = 1;
-    sMesh->colVtx.numVerts = sMesh->sSimVtxCount;
-    sMesh->colVtx.unkFlagB = -1;
+    CollisionVerts colVerts;
+    colVerts.tagSize   = -1;
+    colVerts.unkFlag   = -1;
+    colVerts.unkVal    = 1;
+    colVerts.numVerts  = sMesh->sSimVtxCount;
+    colVerts.unkFlagB  = -1;
 
-    for (int i = 0; i < sMesh->colVtx.numVerts; i++) {
+    for (int i = 0; i < colVerts.numVerts; i++) {
         std::vector<int> indices = meshColVerts[std::to_string(i)];
         for (size_t j = 0; j < indices.size(); j += 2) {
             Points edge;
@@ -363,14 +364,17 @@ CJsonSimMesh::Load_ColVerts(StTag* pTagParent) {
 
             edge.x.weight = 0.1;
             edge.y.weight = 1.0;
-            sMesh->colVtx.items.push_back(edge);
+            colVerts.items.push_back(edge);
         }
     }
 
     std::vector<uint32_t> paletteIndices = meshColVerts["Palette"];
-    sMesh->colVtx.indices = paletteIndices;
-    sMesh->colVtx.numItems = sMesh->colVtx.items.size();
+    colVerts.indices = paletteIndices;
+    colVerts.numItems = colVerts.items.size();
     pTagParent->children.push_back(pTag);
+
+    pTag->vtxCol_index = sMesh->vtxColGroups.size();
+    sMesh->vtxColGroups.push_back(colVerts);
 }
 
 void
@@ -435,7 +439,7 @@ CJsonSimMesh::LoadSimMesh() {
     /* Get all mesh constraints */
     Load_Pattern(m_pTagHead);
 
-    printf("\n\nJson mesh conversion success!\n\n");
+    printf("\n\t{YCL Log} Json mesh conversion success!\n\n");
 }
 
 

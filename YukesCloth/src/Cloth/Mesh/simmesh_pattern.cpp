@@ -12,7 +12,7 @@ CSimMeshPattern::CSimMeshPattern(CSimObj* obj, char*& data) :
 void
 CSimMeshPattern::loadSimMeshPattern(StSimMesh& sMesh) {
 	if (!&sMesh) {
-		printf("Could not parse skin pattern - Missing sim mesh destination.\n");
+		printf("\t{YCL Log} Could not parse skin pattern - Missing sim mesh destination.\n");
 		return;
 	}
 
